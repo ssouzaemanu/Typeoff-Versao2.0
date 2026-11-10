@@ -1,0 +1,16 @@
+{
+  "name": "typeoff",
+  "version": "3.1.0",
+  "description": "Plataforma educacional com Firebase",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node tests/unitarios.test.js && node tests/integracao.test.js",
+    "test:front": "node tests/frontend.test.js",
+    "atualizar:conteudo": "node db/atualizar_conteudo.js",
+    "atualizar:conteudo:aplicar": "node db/atualizar_conteudo.js --apply"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0"
+  }
+}
