@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Typeoff: gerenciamento de exercícios, diagnóstico e avaliação final para professores.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typeoff — Gerenciar Exercícios</title>
+  <script src="/js/tema.js"></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mascote.css">
+  <style>
+    .section-title{font-family:var(--fonte-codigo);font-size:1.05rem;font-weight:700;color:var(--titulo);margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem;}
+    .opcoes-field{display:flex;flex-direction:column;gap:.4rem;}
+    .opcao-item{display:flex;gap:.5rem;align-items:center;}
+    .opcao-item input{flex:1;}
+    .item-lista{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;border-bottom:1px solid var(--cinza-claro);font-family:var(--fonte-codigo);font-size:.82rem;}
+    .item-lista:last-child{border-bottom:none;}
+    .item-texto{flex:1;color:var(--titulo);}
+    .form-tabs{display:flex;border-bottom:2px solid var(--cinza-claro);margin-bottom:1rem;}
+    .form-tab{padding:.5rem 1rem;background:none;border:none;font-family:var(--fonte-codigo);font-size:.78rem;font-weight:600;color:var(--cinza-medio);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:var(--transicao);}
+    .form-tab.active{color:var(--titulo);border-bottom-color:var(--dourado);}
+    .form-tab-panel{display:none;}
+    .form-tab-panel.active{display:block;}
+    .hint-box{background:rgba(201,169,110,.12);border-left:3px solid var(--dourado);border-radius:var(--raio);padding:.75rem 1rem;font-family:var(--fonte-codigo);font-size:.78rem;color:var(--fb-info);margin-bottom:1rem;line-height:1.6;}
+    .page-tabs{display:flex;gap:0;border-bottom:2px solid var(--cinza-claro);margin-bottom:1.5rem;}
+    .page-tab{padding:.7rem 1.5rem;background:none;border:none;font-family:var(--fonte-codigo);font-size:.82rem;font-weight:600;color:var(--cinza-medio);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:var(--transicao);}
+    .page-tab.active{color:var(--titulo);border-bottom-color:var(--dourado);}
+    .page-panel{display:none;}
+    .page-panel.active{display:block;}
+    .badge-diag{background:rgba(74,111,165,.12);color:var(--azul-texto);}
+    .badge-avfinal{background:rgba(201,169,110,.2);color:var(--fb-info);}
+    .edit-chip{background:rgba(27,42,107,.06);color:var(--azul-texto);font-family:var(--fonte-codigo);font-size:.7rem;padding:2px 7px;border-radius:20px;margin-left:.5rem;}
+
+    .balance-grid {
+      display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+      gap:.6rem;margin-bottom:1.25rem;
+    }
+    .balance-cell {
+      background:var(--superficie);border:1px solid var(--cinza-claro);
+      border-radius:var(--raio);padding:.75rem 1rem;text-align:center;
+      transition:var(--transicao);
+    }
+    .balance-cell.ok    { border-color:var(--sucesso);background:rgba(39,174,96,.05); }
+    .balance-cell.warn  { border-color:var(--aviso);background:rgba(230,126,34,.05); }
+    .balance-cell.empty { border-color:var(--cinza-claro);opacity:.65; }
+    .balance-num {
+      font-family:var(--fonte-codigo);font-size:1.6rem;font-weight:700;
+      color:var(--titulo);line-height:1;
+    }
+    .balance-num.ok   { color:var(--sucesso-texto); }
+    .balance-num.warn { color:var(--aviso-texto); }
+    .balance-label {
+      font-family:var(--fonte-codigo);font-size:.65rem;
+      text-transform:uppercase;letter-spacing:.07em;
+      color:var(--cinza-medio);margin-top:.25rem;
+    }
+
+    .dup-alert {
+      display:none;
+      background:rgba(192,57,43,.07);
+      border:1px solid rgba(192,57,43,.25);
+      border-left:4px solid var(--erro);
+      border-radius:var(--raio);
+      padding:.875rem 1.1rem;
+      margin-bottom:1rem;
+      font-family:var(--fonte-codigo);
+      font-size:.8rem;color:var(--fb-err);
+      line-height:1.6;
+    }
+    .dup-alert.visivel { display:block; }
+
+    .status-bar {
+      display:flex;align-items:center;justify-content:space-between;
+      background:rgba(27,42,107,.04);
+      border:1px solid rgba(27,42,107,.1);
+      border-radius:var(--raio);
+      padding:.75rem 1.25rem;
+      margin-bottom:1.25rem;
+      font-family:var(--fonte-codigo);font-size:.8rem;
+    }
+    .status-bar-left { color:var(--titulo); font-weight:600; }
+    .status-bar-right { color:var(--cinza-medio); }
+    .status-ok   { color:var(--sucesso-texto) !important; }
+    .status-warn { color:var(--aviso-texto) !important; }
+    .status-err  { color:var(--erro) !important; }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-content">
+    <header class="topbar">
+      <div>
+        <h1 class="topbar-title">Gerenciar Exercícios</h1>
+        <div class="topbar-breadcrumb">Adicione, edite e organize as questões do curso</div>
+      </div>
+      <a href="/professor.html" class="btn btn-secondary btn-sm">← Painel Geral</a>
+    </header>
+    <main class="page-body" id="conteudo-principal" tabindex="-1">
+
+      <div class="page-tabs">
+        <button class="page-tab active" onclick="trocarPagina('exercicios')">✏️ Exercícios por Unidade</button>
+        <button class="page-tab"        onclick="trocarPagina('diagnostico')">🎯 Diagnóstico</button>
+        <button class="page-tab"        onclick="trocarPagina('avfinal')">📝 Avaliação Final</button>
+      </div>
+
+      <div class="page-panel active" id="panel-exercicios">
+
+        <div class="card mb-3">
+          <div class="section-title" style="margin-bottom:.75rem">
+            ⚖️ Equilíbrio de questões por unidade
+          </div>
+          <div class="hint-box" style="margin-bottom:.75rem">
+            ✦ Cada unidade deve ter a <strong>mesma quantidade de exercícios</strong>.
+            Questões com enunciados idênticos ou muito similares são sinalizadas como duplicatas.
+          </div>
+          <div class="balance-grid" id="balance-grid">
+
+          </div>
+          <div id="balance-status" class="status-bar">
+            <span class="status-bar-left" id="balance-msg">Carregando...</span>
+            <span class="status-bar-right" id="balance-meta"></span>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="section-title" id="ex-titulo-section">✏️ Adicionar Exercício</div>
+          <input type="hidden" id="ex-edit-id">
+
+          <div class="form-group"><label for="ex-unidade">Unidade</label><select id="ex-unidade"></select></div>
+
+          <div class="dup-alert" id="dup-alert-ex">
+            ⚠️ <strong>Possível duplicata detectada!</strong>
+            Um exercício com enunciado muito similar já existe nesta unidade.
+            Verifique antes de salvar.
+          </div>
+
+          <div class="form-group">
+            <span class="rotulo-grupo">Enunciado</span>
+            <div class="form-tabs">
+              <button class="form-tab active" onclick="trocarAba('texto','ex')">📝 Texto</button>
+              <button class="form-tab"        onclick="trocarAba('codigo','ex')">💻 + Código</button>
+              <button class="form-tab"        onclick="trocarAba('imagem','ex')">🖼️ + Imagem</button>
+            </div>
+            <div class="form-tab-panel active" id="ex-aba-texto">
+              <textarea id="ex-en-texto" aria-label="Texto do enunciado" rows="3"
+                placeholder="Ex: Qual opção declara uma variável em Python?"
+                oninput="verificarDuplicataEx()"></textarea>
+            </div>
+            <div class="form-tab-panel" id="ex-aba-codigo">
+              <div class="hint-box">✦ Escreva a pergunta acima e cole o código abaixo.</div>
+              <textarea id="ex-en-cod-txt" aria-label="Texto antes do código" rows="2"
+                placeholder="Ex: Observe o código. O que ele imprime?"
+                oninput="verificarDuplicataEx()"></textarea>
+              <select id="ex-en-lang" aria-label="Linguagem do código" style="width:auto;margin:.4rem 0;font-size:.78rem;padding:.35rem .6rem">
+                <option value="python">Python</option><option value="java">Java</option>
+                <option value="c">C</option><option value="generico">Genérico</option>
+              </select>
+              <textarea id="ex-en-cod-bloco" aria-label="Bloco de código" rows="4"
+                placeholder="x = 10&#10;print(x)"
+                style="font-family:var(--fonte-codigo);font-size:.85rem"></textarea>
+            </div>
+            <div class="form-tab-panel" id="ex-aba-imagem">
+              <div class="hint-box">✦ Cole o link direto de uma imagem (Imgur, Drive, Discord).</div>
+              <textarea id="ex-en-img-txt" aria-label="Texto antes da imagem" rows="2"
+                placeholder="Pergunta sobre a imagem..."
+                oninput="verificarDuplicataEx()"></textarea>
+              <input type="text" id="ex-en-img-url" aria-label="Endereço da imagem" placeholder="https://..." style="margin-top:.5rem"
+                oninput="prevImg()">
+              <div id="prev-img-wrap" style="display:none;margin-top:.5rem">
+                <img id="prev-img" alt="Pré-visualização da imagem do enunciado" src="" style="max-width:100%;max-height:200px;border-radius:var(--raio);border:1px solid var(--cinza-claro)">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="ex-tipo">Tipo</label>
+            <select id="ex-tipo" onchange="atualizarTipoEx()">
+              <option value="multipla_escolha">Múltipla escolha</option>
+              <option value="verdadeiro_falso">Verdadeiro ou Falso</option>
+            </select>
+          </div>
+          <div id="ex-opcoes-wrap">
+            <div class="form-group">
+              <span class="rotulo-grupo">Opções de resposta</span>
+              <div class="opcoes-field" id="ex-opcoes-lista">
+                <div class="opcao-item"><input aria-label="Opção A" type="text" placeholder="Opção A" class="opcao-input"><button type="button" class="btn btn-danger btn-sm" aria-label="Remover opção" onclick="remOpcao(this)">−</button></div>
+                <div class="opcao-item"><input aria-label="Opção B" type="text" placeholder="Opção B" class="opcao-input"><button type="button" class="btn btn-danger btn-sm" aria-label="Remover opção" onclick="remOpcao(this)">−</button></div>
+                <div class="opcao-item"><input aria-label="Opção C" type="text" placeholder="Opção C" class="opcao-input"><button type="button" class="btn btn-danger btn-sm" aria-label="Remover opção" onclick="remOpcao(this)">−</button></div>
+              </div>
+              <button class="btn btn-secondary btn-sm mt-1" onclick="addOpcao('ex-opcoes-lista')">+ Opção</button>
+            </div>
+          </div>
+          <div class="form-group"><label for="ex-resposta">Resposta correta</label>
+            <input type="text" id="ex-resposta" placeholder="Digite exatamente o texto da resposta correta"></div>
+          <div class="form-group"><label for="ex-explicacao">Explicação / Feedback</label>
+            <textarea id="ex-explicacao" rows="2" placeholder="Por que esta é a resposta correta?"></textarea></div>
+          <div class="form-group"><label for="ex-ordem">Ordem</label>
+            <input type="number" id="ex-ordem" value="1" min="1" style="width:100px"></div>
+          <div style="display:flex;gap:.75rem">
+            <button class="btn btn-primary" onclick="salvarExercicio('formativa')">+ Salvar exercício</button>
+            <button class="btn btn-secondary hidden" id="ex-cancelar-btn" onclick="cancelarEdicaoEx()">Cancelar</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">Exercícios por unidade</div>
+          <div class="form-group">
+            <label for="ex-filtro-unidade">Filtrar por unidade</label>
+            <select id="ex-filtro-unidade" onchange="carregarExercicios()"></select>
+          </div>
+          <div id="lista-exercicios" style="border:1px solid var(--cinza-claro);border-radius:var(--raio)"></div>
+        </div>
+      </div>
+
+      <div class="page-panel" id="panel-diagnostico">
+        <div class="hint-box" style="margin-bottom:1.25rem">
+          🎯 <strong>Diagnóstico Inicial:</strong> 10 questões (2 por unidade — 1 fácil e 1 complexa).
+          São aplicadas no primeiro acesso do aluno para determinar qual unidade ele deve começar.
+        </div>
+
+        <div class="card mb-3">
+          <div class="section-title" style="margin-bottom:.75rem">⚖️ Distribuição das questões</div>
+          <div class="balance-grid" id="balance-grid-diag"></div>
+          <div class="status-bar">
+            <span class="status-bar-left" id="diag-balance-msg">Carregando...</span>
+            <span class="status-bar-right">Meta: 2 questões por unidade · 10 no total</span>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="section-title" id="diag-titulo-section">Adicionar Questão de Diagnóstico</div>
+          <input type="hidden" id="diag-edit-id">
+
+          <div class="dup-alert" id="dup-alert-diag">
+            ⚠️ <strong>Possível duplicata detectada!</strong>
+            Uma questão com enunciado muito similar já existe no diagnóstico.
+          </div>
+
+          <div class="form-group">
+            <label for="diag-unidade">Unidade referente</label>
+            <select id="diag-unidade"><option value="">— Geral (sem unidade específica) —</option></select>
+          </div>
+          <div class="form-group">
+            <label for="diag-enunciado">Enunciado (texto simples)</label>
+            <textarea id="diag-enunciado" rows="3"
+              placeholder="Escreva a questão aqui..."
+              oninput="verificarDuplicataDiag()"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="diag-tipo">Tipo</label>
+            <select id="diag-tipo" onchange="atualizarTipoDiag()">
+              <option value="multipla_escolha">Múltipla escolha</option>
+              <option value="verdadeiro_falso">Verdadeiro ou Falso</option>
+            </select>
+          </div>
+          <div id="diag-opcoes-wrap">
+            <div class="form-group">
+              <span class="rotulo-grupo">Opções</span>
+              <div class="opcoes-field" id="diag-opcoes-lista">
+                <div class="opcao-item"><input aria-label="Opção A" type="text" placeholder="Opção A" class="opcao-input"><button type="button" class="btn btn-danger btn-sm" aria-label="Remover opção" onclick="remOpcao(this)">−</button></div>
+                <div class="opcao-item"><input aria-label="Opção B" type="text" placeholder="Opção B" class="opcao-input"><button type="button" class="btn btn-danger btn-sm" aria-label="Remover opção" onclick="remOpcao(this)">−</button></div>
+                <div class="opcao-item"><input aria-label="Opção C" type="text" placeholder="Opção C" class="opcao-input"><button type="button" class="btn btn-danger btn-sm" aria-label="Remover opção" onclick="remOpcao(this)">−</button></div>
+              </div>
+              <button class="btn btn-secondary btn-sm mt-1" onclick="addOpcao('diag-opcoes-lista')">+ Opção</button>
+            </div>
+          </div>
+          <div class="form-group"><label for="diag-resposta">Resposta correta</label>
+            <input type="text" id="diag-resposta" placeholder="Texto exato da resposta correta (ou: verdadeiro / falso)"></div>
+          <div class="form-group"><label for="diag-explicacao">Explicação</label>
+            <textarea id="diag-explicacao" rows="2" placeholder="Feedback exibido após a resposta"></textarea></div>
+          <div class="form-group"><label for="diag-ordem">Ordem</label>
+            <input type="number" id="diag-ordem" value="1" min="1" style="width:100px"></div>
+          <div style="display:flex;gap:.75rem">
+            <button class="btn btn-primary" onclick="salvarExercicio('diagnostica')">+ Salvar questão</button>
+            <button class="btn btn-secondary hidden" id="diag-cancelar-btn" onclick="cancelarEdicaoDiag()">Cancelar</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">
+            Questões de Diagnóstico
+            <span class="badge badge-diag" id="diag-count">0</span>
+          </div>
+          <div id="lista-diagnostico" style="border:1px solid var(--cinza-claro);border-radius:var(--raio)"></div>
+        </div>
+      </div>
+
+      <div class="page-panel" id="panel-avfinal">
+        <div class="hint-box" style="margin-bottom:1.25rem">
+          📝 <strong>Avaliação Final:</strong> 10 questões de nível avançado (2 por unidade).
+          Disponível após o aluno concluir a Unidade 5 (ou obter 100% no diagnóstico).
+          Exige 80% para emissão do certificado.
+        </div>
+
+        <div class="card mb-3">
+          <div class="section-title" style="margin-bottom:.75rem">⚖️ Distribuição das questões</div>
+          <div class="balance-grid" id="balance-grid-avf"></div>
+          <div class="status-bar">
+            <span class="status-bar-left" id="avf-balance-msg">Carregando...</span>
+            <span class="status-bar-right">Meta: 2 questões por unidade · 10 no total</span>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="section-title" id="avf-titulo-section">Adicionar Questão da Avaliação Final</div>
+          <input type="hidden" id="avf-edit-id">
+
+          <div class="dup-alert" id="dup-alert-avf">
+            ⚠️ <strong>Possível duplicata detectada!</strong>
+            Uma questão com enunciado muito similar já existe na avaliação final.
+          </div>
+
+          <div class="form-group">
+            <label for="avf-unidade">Unidade referente</label>
+            <select id="avf-unidade"><option value="">— Geral —</option></select>
+          </div>
+          <div class="form-group">
+            <label for="avf-enunciado">Enunciado (texto simples)</label>
+            <textarea id="avf-enunciado" rows="3"
+              placeholder="Questão de nível avançado..."
+              oninput="verificarDuplicataAvf()"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="avf-tipo">Tipo</label>
+            <select id="avf-tipo" onchange="atualizarTipoAvf()">
+              <option value="multipla_escolha">Múltipla escolha</option>
+              <option value="verdadeiro_falso">Verdadeiro ou Falso</option>
+            </select>
+          </div>
+          <div id="avf-opcoes-wrap">
+            <div class="form-group">
+              <span class="rotulo-grupo">Opções</span>
+              <div class="opcoes-field" id="avf-opcoes-lista">
+                <div class="opcao-item"><input aria-label="Opção A" type="text" placeholder="Opção A" class="opcao-input"><button type="button" class="btn btn-danger btn-sm" aria-label="Remover opção" onclick="remOpcao(this)">−</button></div>
+                <div class="opcao-item"><input aria-label="Opção B" type="text" placeholder="Opção B" class="opcao-input"><button type="button" class="btn btn-danger btn-sm" aria-label="Remover opção" onclick="remOpcao(this)">−</button></div>
+                <div class="opcao-item"><input aria-label="Opção C" type="text" placeholder="Opção C" class="opcao-input"><button type="button" class="btn btn-danger btn-sm" aria-label="Remover opção" onclick="remOpcao(this)">−</button></div>
+              </div>
+              <button class="btn btn-secondary btn-sm mt-1" onclick="addOpcao('avf-opcoes-lista')">+ Opção</button>
+            </div>
+          </div>
+          <div class="form-group"><label for="avf-resposta">Resposta correta</label>
+            <input type="text" id="avf-resposta" placeholder="Texto exato da resposta correta"></div>
+          <div class="form-group"><label for="avf-explicacao">Explicação</label>
+            <textarea id="avf-explicacao" rows="2" placeholder="Feedback após resposta"></textarea></div>
+          <div class="form-group"><label for="avf-ordem">Ordem</label>
+            <input type="number" id="avf-ordem" value="1" min="1" style="width:100px"></div>
+          <div style="display:flex;gap:.75rem">
+            <button class="btn btn-primary" onclick="salvarExercicio('avaliacao_final')">+ Salvar questão</button>
+            <button class="btn btn-secondary hidden" id="avf-cancelar-btn" onclick="cancelarEdicaoAvf()">Cancelar</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">
+            Questões da Avaliação Final
+            <span class="badge badge-avfinal" id="avf-count">0</span>
+          </div>
+          <div id="lista-avfinal" style="border:1px solid var(--cinza-claro);border-radius:var(--raio)"></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+<script>
+
+let unidades = [], abaAtualEx = 'texto';
+let exerciciosPorUnidade = {};
+let exerciciosDiag = [];
+let exerciciosAvf  = [];
+
+async function iniciar(){
+  const usuario = await verificarLogin('professor');
+  if (!usuario) return;
+  renderizarSidebar(usuario, [], 'gerenciar');
+
+  const res = await fetch('/api/unidades').then(r => r.json());
+  if (res.sucesso) { unidades = res.unidades; popularSelects(); }
+
+  const p = new URLSearchParams(window.location.search);
+  if (p.get('unidade')) {
+    const uid = p.get('unidade');
+    ['ex-unidade','ex-filtro-unidade'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = uid;
+    });
+  }
+
+  await Promise.all([
+    carregarTodosExercicios(),
+    carregarDiagnostico(),
+    carregarAvFinal()
+  ]);
+}
+
+function popularSelects(){
+  const opts = unidades.map(u => `<option value="${u.id}">U${u.ordem}. ${u.titulo}</option>`).join('');
+  const optsComVazio = `<option value="">— Geral —</option>` + opts;
+  ['ex-unidade','ex-filtro-unidade'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.innerHTML = opts;
+  });
+  ['diag-unidade','avf-unidade'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.innerHTML = optsComVazio;
+  });
+  document.getElementById('ex-unidade').addEventListener('change', carregarExercicios);
+  document.getElementById('ex-filtro-unidade').addEventListener('change', carregarExercicios);
+  carregarExercicios();
+}
+
+function trocarPagina(nome){
+  document.querySelectorAll('.page-tab').forEach((b,i) =>
+    b.classList.toggle('active', ['exercicios','diagnostico','avfinal'][i] === nome)
+  );
+  document.querySelectorAll('.page-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + nome).classList.add('active');
+}
+
+function trocarAba(aba, prefixo){
+  abaAtualEx = aba;
+  const tabs   = document.querySelectorAll(`#panel-exercicios .form-tab`);
+  const panels = document.querySelectorAll(`#panel-exercicios .form-tab-panel`);
+  tabs.forEach((t,i)   => t.classList.toggle('active', ['texto','codigo','imagem'][i] === aba));
+  panels.forEach(p     => p.classList.remove('active'));
+  document.getElementById(`${prefixo}-aba-${aba}`).classList.add('active');
+}
+function prevImg(){
+  const u = document.getElementById('ex-en-img-url').value.trim();
+  const w = document.getElementById('prev-img-wrap');
+  document.getElementById('prev-img').src = u;
+  w.style.display = u ? 'block' : 'none';
+}
+function montarEnunciado(){
+  if (abaAtualEx === 'texto') {
+    const t = document.getElementById('ex-en-texto').value.trim();
+    return t ? JSON.stringify({tipo:'texto',texto:t}) : null;
+  }
+  if (abaAtualEx === 'codigo') {
+    const t = document.getElementById('ex-en-cod-txt').value.trim();
+    const c = document.getElementById('ex-en-cod-bloco').value.trim();
+    const l = document.getElementById('ex-en-lang').value;
+    return (t||c) ? JSON.stringify({tipo:'codigo',texto:t,codigo:c,linguagem:l}) : null;
+  }
+  if (abaAtualEx === 'imagem') {
+    const t = document.getElementById('ex-en-img-txt').value.trim();
+    const i = document.getElementById('ex-en-img-url').value.trim();
+    return (t||i) ? JSON.stringify({tipo:'imagem',texto:t,imagem:i}) : null;
+  }
+  return null;
+}
+function lerEnunciadoSimples(pfx){
+  return document.getElementById(pfx+'-enunciado').value.trim();
+}
+
+function normalizarTexto(txt) {
+  return txt.toLowerCase().trim()
+    .replace(/[^\w\sáéíóúâêîôûãõçàèìòùäëïöü]/g, '')
+    .replace(/\s+/g, ' ');
+}
+
+function calcularSimilaridade(a, b) {
+  const pa = new Set(normalizarTexto(a).split(' ').filter(w => w.length > 3));
+  const pb = new Set(normalizarTexto(b).split(' ').filter(w => w.length > 3));
+  if (!pa.size || !pb.size) return 0;
+  let comuns = 0;
+  pa.forEach(w => { if (pb.has(w)) comuns++; });
+  return comuns / Math.max(pa.size, pb.size);
+}
+
+function extrairTextoEnunciado(raw) {
+  try { const o = JSON.parse(raw); return o.texto || raw; } catch(e) { return raw; }
+}
+
+function verificarDuplicataEx() {
+  const uid    = document.getElementById('ex-unidade').value;
+  const novoTxt = document.getElementById('ex-en-texto').value.trim()
+    || document.getElementById('ex-en-cod-txt').value.trim()
+    || document.getElementById('ex-en-img-txt').value.trim();
+  const alertEl = document.getElementById('dup-alert-ex');
+
+  if (!novoTxt || novoTxt.length < 10 || !exerciciosPorUnidade[uid]) {
+    alertEl.classList.remove('visivel'); return;
+  }
+
+  const editId = parseInt(document.getElementById('ex-edit-id').value)||0;
+  const lista  = exerciciosPorUnidade[uid] || [];
+  const ehDup  = lista.some(e => {
+    if (e.id === editId) return false;
+    const t = extrairTextoEnunciado(e.enunciado);
+    return calcularSimilaridade(novoTxt, t) > 0.65;
+  });
+
+  alertEl.classList.toggle('visivel', ehDup);
+}
+
+function verificarDuplicataDiag() {
+  const novoTxt = document.getElementById('diag-enunciado').value.trim();
+  const alertEl = document.getElementById('dup-alert-diag');
+  if (!novoTxt || novoTxt.length < 10) { alertEl.classList.remove('visivel'); return; }
+  const editId = parseInt(document.getElementById('diag-edit-id').value)||0;
+  const ehDup = exerciciosDiag.some(e => {
+    if (e.id === editId) return false;
+    return calcularSimilaridade(novoTxt, extrairTextoEnunciado(e.enunciado)) > 0.65;
+  });
+  alertEl.classList.toggle('visivel', ehDup);
+}
+
+function verificarDuplicataAvf() {
+  const novoTxt = document.getElementById('avf-enunciado').value.trim();
+  const alertEl = document.getElementById('dup-alert-avf');
+  if (!novoTxt || novoTxt.length < 10) { alertEl.classList.remove('visivel'); return; }
+  const editId = parseInt(document.getElementById('avf-edit-id').value)||0;
+  const ehDup = exerciciosAvf.some(e => {
+    if (e.id === editId) return false;
+    return calcularSimilaridade(novoTxt, extrairTextoEnunciado(e.enunciado)) > 0.65;
+  });
+  alertEl.classList.toggle('visivel', ehDup);
+}
+
+async function carregarTodosExercicios(){
+  exerciciosPorUnidade = {};
+  await Promise.all(unidades.map(async u => {
+    const res = await fetch(`/api/exercicios/${u.id}?categoria=formativa`).then(r=>r.json());
+    exerciciosPorUnidade[u.id] = res.exercicios || [];
+  }));
+  renderizarBalance();
+  carregarExercicios();
+}
+
+function renderizarBalance(){
+  const grid   = document.getElementById('balance-grid');
+  const msgEl  = document.getElementById('balance-msg');
+  const metaEl = document.getElementById('balance-meta');
+
+  const counts = unidades.map(u => ({
+    u,
+    n: (exerciciosPorUnidade[u.id] || []).length
+  }));
+
+  const nums   = counts.map(c => c.n);
+  const min    = Math.min(...nums);
+  const max    = Math.max(...nums);
+  const meta   = max;
+  const ok     = min === max && max > 0;
+  const total  = nums.reduce((a,b)=>a+b,0);
+
+  grid.innerHTML = counts.map(({u,n}) => {
+    const cls = n === 0 ? 'empty' : n === meta ? 'ok' : 'warn';
+    return `<div class="balance-cell ${cls}">
+      <div class="balance-num ${cls}">${n}</div>
+      <div class="balance-label">U${u.ordem} — ${u.titulo.substring(0,12)}${u.titulo.length>12?'…':''}</div>
+    </div>`;
+  }).join('');
+
+  if (total === 0) {
+    msgEl.className = 'status-bar-left';
+    msgEl.textContent = 'Nenhum exercício cadastrado ainda.';
+    metaEl.textContent = '';
+  } else if (ok) {
+    msgEl.className = 'status-bar-left status-ok';
+    msgEl.textContent = `✓ Equilibrado — ${max} exercícios por unidade`;
+    metaEl.textContent = `${total} no total`;
+  } else {
+    msgEl.className = 'status-bar-left status-warn';
+    msgEl.textContent = `⚠ Desequilíbrio — entre ${min} e ${max} exercícios por unidade`;
+    metaEl.textContent = `${total} no total · iguale para ${max} em todas`;
+  }
+
+  let dupEncontradas = 0;
+  unidades.forEach(u => {
+    const lista = exerciciosPorUnidade[u.id] || [];
+    lista.forEach((e, i) => {
+      for (let j = i+1; j < lista.length; j++) {
+        const sim = calcularSimilaridade(
+          extrairTextoEnunciado(e.enunciado),
+          extrairTextoEnunciado(lista[j].enunciado)
+        );
+        if (sim > 0.65) dupEncontradas++;
+      }
+    });
+  });
+
+  if (dupEncontradas > 0) {
+    metaEl.textContent += ` · ⚠ ${dupEncontradas} possível(is) duplicata(s) nos exercícios`;
+    metaEl.className = 'status-bar-right status-err';
+  }
+}
+
+async function carregarExercicios(){
+  const id = document.getElementById('ex-filtro-unidade').value
+    || document.getElementById('ex-unidade').value;
+  if (!id) return;
+
+  const res  = await fetch(`/api/exercicios/${id}?categoria=formativa`).then(r=>r.json());
+  exerciciosPorUnidade[id] = res.exercicios || [];
+  renderizarBalance();
+
+  const lista = document.getElementById('lista-exercicios');
+  if (!res.exercicios || !res.exercicios.length) {
+    lista.innerHTML = '<div class="item-lista" style="justify-content:center;color:var(--cinza-medio)">Nenhum exercício nesta unidade</div>';
+    return;
+  }
+
+  const dupsIds = new Set();
+  const arr = res.exercicios;
+  arr.forEach((e, i) => {
+    for (let j = i+1; j < arr.length; j++) {
+      const sim = calcularSimilaridade(
+        extrairTextoEnunciado(e.enunciado),
+        extrairTextoEnunciado(arr[j].enunciado)
+      );
+      if (sim > 0.65) { dupsIds.add(e.id); dupsIds.add(arr[j].id); }
+    }
+  });
+
+  lista.innerHTML = res.exercicios.map(e => {
+    let txt = e.enunciado;
+    try { const o = JSON.parse(e.enunciado); txt = o.texto || txt; } catch(x){}
+    const isDup = dupsIds.has(e.id);
+    return `<div class="item-lista" style="${isDup?'background:rgba(192,57,43,.04)':''}">
+      <div class="item-texto">
+        ${(e.tipo==='completar_codigo'||e.tipo==='ordenar_linhas')?'<span class="tag-teste" style="background:rgba(201,169,110,.25);color:var(--dourado-texto)">prática</span> ':''}${txt.length>65 ? txt.substring(0,65)+'…' : txt}
+        ${isDup ? '<span style="color:var(--erro);font-size:.68rem;margin-left:.5rem">⚠ duplicata</span>' : ''}
+      </div>
+      <div style="display:flex;gap:.5rem">
+        <button class="btn btn-secondary btn-sm" onclick="editarExercicio(${e.id},'formativa')">✎ Editar</button>
+        <button class="btn btn-danger btn-sm"    onclick="deletarExercicio(${e.id},'ex')">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function salvarExercicio(categoria){
+  const prefixos = { formativa:'ex', diagnostica:'diag', avaliacao_final:'avf' };
+  const pfx      = prefixos[categoria];
+  const editId   = document.getElementById(pfx+'-edit-id').value;
+  let enunciado, tipo, opcoes, resposta, explicacao, ordem, unidade_id;
+
+  if (categoria === 'formativa') {
+    enunciado = montarEnunciado();
+    tipo      = document.getElementById('ex-tipo').value;
+    resposta  = document.getElementById('ex-resposta').value.trim();
+    explicacao= document.getElementById('ex-explicacao').value.trim();
+    ordem     = document.getElementById('ex-ordem').value;
+    unidade_id= document.getElementById('ex-unidade').value;
+    if (tipo === 'multipla_escolha') {
+      opcoes = Array.from(document.querySelectorAll('#ex-opcoes-lista .opcao-input'))
+        .map(i => i.value.trim()).filter(v => v);
+      if (opcoes.length < 2) { mostrarToast('Mínimo 2 opções.','erro'); return; }
+    }
+  } else {
+    const en = document.getElementById(pfx+'-enunciado').value.trim();
+    if (!en) { mostrarToast('Preencha o enunciado.','erro'); return; }
+    enunciado  = JSON.stringify({tipo:'texto', texto:en});
+    tipo       = document.getElementById(pfx+'-tipo').value;
+    resposta   = document.getElementById(pfx+'-resposta').value.trim();
+    explicacao = document.getElementById(pfx+'-explicacao').value.trim();
+    ordem      = document.getElementById(pfx+'-ordem').value;
+    const uid  = document.getElementById(pfx+'-unidade').value;
+    unidade_id = uid || null;
+    if (tipo === 'multipla_escolha') {
+      opcoes = Array.from(document.querySelectorAll(`#${pfx}-opcoes-lista .opcao-input`))
+        .map(i => i.value.trim()).filter(v => v);
+      if (opcoes.length < 2) { mostrarToast('Mínimo 2 opções.','erro'); return; }
+    }
+  }
+
+  if (!enunciado) { mostrarToast('Preencha o enunciado.','erro'); return; }
+  if (!resposta)  { mostrarToast('Preencha a resposta correta.','erro'); return; }
+
+  const payload = {
+    enunciado, tipo, opcoes: opcoes||null,
+    resposta_correta: resposta,
+    explicacao: explicacao||'',
+    categoria, ordem: parseInt(ordem)||1
+  };
+  if (unidade_id) payload.unidade_id = parseInt(unidade_id);
+
+  let resp, dados;
+  try {
+    resp = await fetch(editId ? `/api/admin/exercicio/${editId}` : '/api/admin/exercicio', {
+      method: editId ? 'PUT' : 'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    dados = await resp.json();
+  } catch (err) { mostrarToast('Falha de conexão ao salvar o exercício.','erro'); return; }
+
+  if (!dados || dados.sucesso === false) { mostrarToast(dados && dados.erro ? dados.erro : 'Não foi possível salvar o exercício.','erro'); return; }
+  mostrarToast(editId ? 'Exercício atualizado!' : 'Exercício adicionado!','sucesso');
+
+  limparFormExercicio(pfx);
+  if (categoria === 'formativa')      { await carregarTodosExercicios(); }
+  else if (categoria === 'diagnostica'){ await carregarDiagnostico(); }
+  else                                 { await carregarAvFinal(); }
+}
+
+function limparFormExercicio(pfx){
+  document.getElementById(pfx+'-edit-id').value = '';
+  ['enunciado','resposta','explicacao'].forEach(f => {
+    const el = document.getElementById(pfx+'-'+f); if (el) el.value = '';
+  });
+  if (pfx === 'ex') {
+    ['ex-en-texto','ex-en-cod-txt','ex-en-cod-bloco','ex-en-img-txt','ex-en-img-url']
+      .forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  }
+
+  document.querySelectorAll('.dup-alert').forEach(a => a.classList.remove('visivel'));
+}
+
+async function editarExercicio(id, categoria){
+  const res = await fetch('/api/admin/exercicios?categoria='+categoria).then(r=>r.json());
+  const e   = res.exercicios.find(x => x.id === id); if (!e) return;
+  if (e.tipo === 'completar_codigo' || e.tipo === 'ordenar_linhas') {
+    mostrarToast('Atividades práticas (completar código / ordenar linhas) ainda não têm editor visual: use a migração db/atualizar_conteudo.js ou edite o registro no Firestore.','info');
+    return;
+  }
+  const prefixos = { formativa:'ex', diagnostica:'diag', avaliacao_final:'avf' };
+  const pfx = prefixos[e.categoria || categoria];
+
+  document.getElementById(pfx+'-edit-id').value  = id;
+  document.getElementById(pfx+'-resposta').value  = e.resposta_correta;
+  document.getElementById(pfx+'-explicacao').value= e.explicacao||'';
+  document.getElementById(pfx+'-ordem').value     = e.ordem;
+  if (e.unidade_id) {
+    const sel = document.getElementById(pfx+'-unidade'); if (sel) sel.value = e.unidade_id;
+  }
+
+  if (pfx === 'ex') {
+    let d = {tipo:'texto',texto:e.enunciado}; try { d=JSON.parse(e.enunciado); } catch(x){}
+    document.getElementById('ex-en-texto').value = d.texto || e.enunciado;
+    document.getElementById('ex-tipo').value = e.tipo;
+  } else {
+    let d = {tipo:'texto',texto:e.enunciado}; try { d=JSON.parse(e.enunciado); } catch(x){}
+    document.getElementById(pfx+'-enunciado').value = d.texto || e.enunciado;
+    document.getElementById(pfx+'-tipo').value = e.tipo;
+  }
+
+  if (e.tipo === 'multipla_escolha' && e.opcoes) {
+    const listaEl = document.getElementById(pfx+'-opcoes-lista');
+    listaEl.innerHTML = '';
+    e.opcoes.forEach(op => {
+      const d = document.createElement('div'); d.className = 'opcao-item';
+      d.innerHTML = `<input type="text" value="${op}" class="opcao-input">
+        <button type="button" class="btn btn-danger btn-sm" aria-label="Remover opção" onclick="remOpcao(this)">−</button>`;
+      listaEl.appendChild(d);
+    });
+  }
+
+  const secEl  = document.getElementById(pfx+'-titulo-section');
+  if (secEl) secEl.textContent = '✎ Editando exercício';
+  const canBtn = document.getElementById(pfx+'-cancelar-btn');
+  if (canBtn) canBtn.classList.remove('hidden');
+
+  if (pfx === 'ex') trocarPagina('exercicios');
+  else if (pfx === 'diag') trocarPagina('diagnostico');
+  else trocarPagina('avfinal');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function cancelarEdicaoEx(){
+  document.getElementById('ex-edit-id').value='';
+  limparFormExercicio('ex');
+  document.getElementById('ex-titulo-section').textContent='✏️ Adicionar Exercício';
+  document.getElementById('ex-cancelar-btn').classList.add('hidden');
+}
+function cancelarEdicaoDiag(){
+  document.getElementById('diag-edit-id').value='';
+  limparFormExercicio('diag');
+  document.getElementById('diag-titulo-section').textContent='Adicionar Questão de Diagnóstico';
+  document.getElementById('diag-cancelar-btn').classList.add('hidden');
+}
+function cancelarEdicaoAvf(){
+  document.getElementById('avf-edit-id').value='';
+  limparFormExercicio('avf');
+  document.getElementById('avf-titulo-section').textContent='Adicionar Questão da Avaliação Final';
+  document.getElementById('avf-cancelar-btn').classList.add('hidden');
+}
+
+async function deletarExercicio(id, pfx){
+  if (!confirm('Remover este exercício?')) return;
+  await fetch(`/api/admin/exercicio/${id}`, {method:'DELETE'});
+  mostrarToast('Removido.','sucesso');
+  if (pfx==='ex')        await carregarTodosExercicios();
+  else if (pfx==='diag') await carregarDiagnostico();
+  else                   await carregarAvFinal();
+}
+
+function renderizarBalanceDiag(){
+  const grid  = document.getElementById('balance-grid-diag');
+  const msgEl = document.getElementById('diag-balance-msg');
+
+  const countsPorUnidade = {};
+  unidades.forEach(u => { countsPorUnidade[u.id] = 0; });
+  exerciciosDiag.forEach(e => {
+    if (e.unidade_id) countsPorUnidade[e.unidade_id] = (countsPorUnidade[e.unidade_id]||0)+1;
+  });
+
+  grid.innerHTML = unidades.map(u => {
+    const n   = countsPorUnidade[u.id]||0;
+    const cls = n === 0 ? 'empty' : n === 2 ? 'ok' : 'warn';
+    return `<div class="balance-cell ${cls}">
+      <div class="balance-num ${cls}">${n}</div>
+      <div class="balance-label">U${u.ordem}</div>
+    </div>`;
+  }).join('');
+
+  const total = exerciciosDiag.length;
+  if (total === 10) {
+    const valido = unidades.every(u => countsPorUnidade[u.id] === 2);
+    msgEl.className = valido ? 'status-bar-left status-ok' : 'status-bar-left status-warn';
+    msgEl.textContent = valido
+      ? `✓ Perfeito — 10 questões, 2 por unidade`
+      : `⚠ 10 questões, mas distribuição incorreta (precisa de 2 por unidade)`;
+  } else {
+    msgEl.className = 'status-bar-left status-warn';
+    msgEl.textContent = `${total}/10 questões cadastradas`;
+  }
+}
+
+function renderizarBalanceAvf(){
+  const grid  = document.getElementById('balance-grid-avf');
+  const msgEl = document.getElementById('avf-balance-msg');
+
+  const countsPorUnidade = {};
+  unidades.forEach(u => { countsPorUnidade[u.id] = 0; });
+  exerciciosAvf.forEach(e => {
+    if (e.unidade_id) countsPorUnidade[e.unidade_id] = (countsPorUnidade[e.unidade_id]||0)+1;
+  });
+
+  grid.innerHTML = unidades.map(u => {
+    const n   = countsPorUnidade[u.id]||0;
+    const cls = n === 0 ? 'empty' : n === 2 ? 'ok' : 'warn';
+    return `<div class="balance-cell ${cls}">
+      <div class="balance-num ${cls}">${n}</div>
+      <div class="balance-label">U${u.ordem}</div>
+    </div>`;
+  }).join('');
+
+  const total = exerciciosAvf.length;
+  if (total === 10) {
+    const valido = unidades.every(u => countsPorUnidade[u.id] === 2);
+    msgEl.className = valido ? 'status-bar-left status-ok' : 'status-bar-left status-warn';
+    msgEl.textContent = valido
+      ? `✓ Perfeito — 10 questões, 2 por unidade`
+      : `⚠ 10 questões, mas distribuição incorreta`;
+  } else {
+    msgEl.className = 'status-bar-left status-warn';
+    msgEl.textContent = `${total}/10 questões cadastradas`;
+  }
+}
+
+async function carregarDiagnostico(){
+  const res   = await fetch('/api/admin/exercicios?categoria=diagnostica').then(r=>r.json());
+  exerciciosDiag = res.exercicios || [];
+
+  const lista  = document.getElementById('lista-diagnostico');
+  const count  = document.getElementById('diag-count');
+  renderizarBalanceDiag();
+
+  if (!exerciciosDiag.length) {
+    lista.innerHTML = '<div class="item-lista" style="justify-content:center;color:var(--cinza-medio)">Nenhuma questão cadastrada. Cadastre 10 questões (2 por unidade).</div>';
+    count.textContent = '0/10'; return;
+  }
+  count.textContent = exerciciosDiag.length + '/10';
+
+  const dupsIds = new Set();
+  exerciciosDiag.forEach((e,i) => {
+    for (let j=i+1; j<exerciciosDiag.length; j++){
+      if (calcularSimilaridade(
+        extrairTextoEnunciado(e.enunciado),
+        extrairTextoEnunciado(exerciciosDiag[j].enunciado)
+      ) > 0.65) { dupsIds.add(e.id); dupsIds.add(exerciciosDiag[j].id); }
+    }
+  });
+
+  const unNomes = {1:'U1',2:'U2',3:'U3',4:'U4',5:'U5'};
+  lista.innerHTML = exerciciosDiag.map(e => {
+    let txt = e.enunciado;
+    try { const o=JSON.parse(e.enunciado); txt=o.texto||txt; } catch(x){}
+    const tag   = e.unidade_id ? `<span class="edit-chip">${unNomes[e.unidade_id]||'U'+e.unidade_id}</span>` : '';
+    const isDup = dupsIds.has(e.id);
+    return `<div class="item-lista" style="${isDup?'background:rgba(192,57,43,.04)':''}">
+      <div class="item-texto">
+        ${txt.length>65?txt.substring(0,65)+'…':txt}${tag}
+        ${isDup ? '<span style="color:var(--erro);font-size:.68rem;margin-left:.5rem">⚠ duplicata</span>' : ''}
+      </div>
+      <div style="display:flex;gap:.5rem">
+        <button class="btn btn-secondary btn-sm" onclick="editarExercicio(${e.id},'diagnostica')">✎ Editar</button>
+        <button class="btn btn-danger btn-sm"    onclick="deletarExercicio(${e.id},'diag')">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function atualizarTipoDiag(){
+  const t = document.getElementById('diag-tipo').value;
+  document.getElementById('diag-opcoes-wrap').style.display = t==='multipla_escolha'?'block':'none';
+  document.getElementById('diag-resposta').placeholder = t==='verdadeiro_falso'?'verdadeiro  ou  falso':'Texto exato da resposta';
+}
+
+async function carregarAvFinal(){
+  const res = await fetch('/api/admin/exercicios?categoria=avaliacao_final').then(r=>r.json());
+  exerciciosAvf = res.exercicios || [];
+
+  const lista = document.getElementById('lista-avfinal');
+  const count = document.getElementById('avf-count');
+  renderizarBalanceAvf();
+
+  if (!exerciciosAvf.length) {
+    lista.innerHTML = '<div class="item-lista" style="justify-content:center;color:var(--cinza-medio)">Nenhuma questão cadastrada. Cadastre 10 questões (2 por unidade).</div>';
+    count.textContent = '0/10'; return;
+  }
+  count.textContent = exerciciosAvf.length + '/10';
+
+  const dupsIds = new Set();
+  exerciciosAvf.forEach((e,i) => {
+    for (let j=i+1; j<exerciciosAvf.length; j++){
+      if (calcularSimilaridade(
+        extrairTextoEnunciado(e.enunciado),
+        extrairTextoEnunciado(exerciciosAvf[j].enunciado)
+      ) > 0.65) { dupsIds.add(e.id); dupsIds.add(exerciciosAvf[j].id); }
+    }
+  });
+
+  const unNomes = {1:'U1',2:'U2',3:'U3',4:'U4',5:'U5'};
+  lista.innerHTML = exerciciosAvf.map(e => {
+    let txt = e.enunciado;
+    try { const o=JSON.parse(e.enunciado); txt=o.texto||txt; } catch(x){}
+    const tag   = e.unidade_id ? `<span class="edit-chip">${unNomes[e.unidade_id]||'U'+e.unidade_id}</span>` : '';
+    const isDup = dupsIds.has(e.id);
+    return `<div class="item-lista" style="${isDup?'background:rgba(192,57,43,.04)':''}">
+      <div class="item-texto">
+        ${txt.length>65?txt.substring(0,65)+'…':txt}${tag}
+        ${isDup ? '<span style="color:var(--erro);font-size:.68rem;margin-left:.5rem">⚠ duplicata</span>' : ''}
+      </div>
+      <div style="display:flex;gap:.5rem">
+        <button class="btn btn-secondary btn-sm" onclick="editarExercicio(${e.id},'avaliacao_final')">✎ Editar</button>
+        <button class="btn btn-danger btn-sm"    onclick="deletarExercicio(${e.id},'avf')">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function atualizarTipoAvf(){
+  const t = document.getElementById('avf-tipo').value;
+  document.getElementById('avf-opcoes-wrap').style.display = t==='multipla_escolha'?'block':'none';
+  document.getElementById('avf-resposta').placeholder = t==='verdadeiro_falso'?'verdadeiro  ou  falso':'Texto exato da resposta';
+}
+
+function addOpcao(listaId){
+  const l = document.getElementById(listaId);
+  const letra = String.fromCharCode(65+l.children.length);
+  const d = document.createElement('div'); d.className='opcao-item';
+  d.innerHTML = `<input aria-label="Opção ${letra}" type="text" placeholder="Opção ${letra}" class="opcao-input">
+    <button type="button" class="btn btn-danger btn-sm" aria-label="Remover opção" onclick="remOpcao(this)">−</button>`;
+  l.appendChild(d);
+}
+function remOpcao(btn){
+  const l = btn.parentElement.parentElement;
+  if (l.children.length > 2) btn.parentElement.remove();
+  else mostrarToast('Mínimo 2 opções.','erro');
+}
+function atualizarTipoEx(){
+  const t = document.getElementById('ex-tipo').value;
+  document.getElementById('ex-opcoes-wrap').style.display = t==='multipla_escolha'?'block':'none';
+  document.getElementById('ex-resposta').placeholder = t==='verdadeiro_falso'?'verdadeiro  ou  falso':'Texto exato da resposta';
+}
+
+iniciar();
+</script>
+<script src="/js/mascote.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <meta name="description" content="Typeoff: entre ou crie sua conta para estudar lógica de programação comparando Python, Java e C.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typeoff: Entrar</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mascote.css">
+</head>
+<body>
+
+<main class="auth-wrapper" id="conteudo-principal">
+  <div class="auth-card">
+
+    <div class="auth-logo">
+      <div class="auth-logo-box">
+        <div class="auth-logo-icon">&lt;/&gt;</div>
+        <h1 class="auth-logo-text">Typeoff</h1>
+      </div>
+      <div class="auth-subtitle">Plataforma de Programação Comparativa</div>
+    </div>
+
+    <div class="auth-tabs" role="tablist" aria-label="Entrar ou criar conta">
+      <button type="button" class="auth-tab active" role="tab" aria-selected="true" aria-controls="form-login" id="tab-login" onclick="trocarAba('login')">Entrar</button>
+      <button type="button" class="auth-tab" role="tab" aria-selected="false" aria-controls="form-registro" id="tab-registro" onclick="trocarAba('registro')">Criar conta</button>
+    </div>
+
+    <div id="form-login" role="tabpanel" aria-labelledby="tab-login">
+      <div class="form-group">
+        <label for="login-email">E-mail</label>
+        <input type="email" id="login-email" autocomplete="username" placeholder="seu@email.com">
+      </div>
+      <div class="form-group">
+        <label for="login-senha">Senha</label>
+        <input type="password" id="login-senha" autocomplete="current-password" placeholder="••••••••">
+      </div>
+      <div id="login-erro" class="form-erro hidden" role="alert"></div>
+      <button class="btn btn-primary w-full mt-2" onclick="fazerLogin()">
+        → Entrar na plataforma
+      </button>
+    </div>
+
+    <div id="form-registro" class="hidden" role="tabpanel" aria-labelledby="tab-registro">
+      <div class="form-group">
+        <label for="reg-nome">Nome completo</label>
+        <input type="text" id="reg-nome" autocomplete="name" placeholder="Seu nome">
+      </div>
+      <div class="form-group">
+        <label for="reg-email">E-mail</label>
+        <input type="email" id="reg-email" autocomplete="email" placeholder="seu@email.com">
+      </div>
+      <div class="form-group">
+        <label for="reg-senha">Senha</label>
+        <input type="password" id="reg-senha" autocomplete="new-password" placeholder="Mínimo 6 caracteres">
+      </div>
+      <div class="form-group">
+        <label for="reg-tipo">Tipo de conta</label>
+        <select id="reg-tipo">
+          <option value="estudante">Estudante</option>
+          <option value="professor">Professor</option>
+        </select>
+      </div>
+      <div id="reg-erro" class="form-erro hidden" role="alert"></div>
+      <button class="btn btn-primary w-full mt-2" onclick="fazerRegistro()">
+        → Criar minha conta
+      </button>
+    </div>
+
+  </div>
+</main>
+
+<script>
+
+  fetch('/api/auth/me').then(r => r.json()).then(data => {
+    if (data.sucesso) {
+      window.location.href = data.usuario.tipo === 'professor' ? '/professor.html' : '/dashboard.html';
+    }
+  });
+
+  function trocarAba(aba) {
+    document.querySelectorAll('.auth-tab').forEach((t, i) => {
+      t.classList.toggle('active', (i === 0 && aba === 'login') || (i === 1 && aba === 'registro'));
+    });
+    document.querySelectorAll('.auth-tab').forEach((t, i) => t.setAttribute('aria-selected', String((i === 0 && aba === 'login') || (i === 1 && aba === 'registro'))));
+    document.getElementById('form-login').classList.toggle('hidden', aba !== 'login');
+    document.getElementById('form-registro').classList.toggle('hidden', aba !== 'registro');
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' || e.target.tagName !== 'INPUT') return;
+    if (document.getElementById('form-login').contains(e.target)) fazerLogin();
+    else if (document.getElementById('form-registro').contains(e.target)) fazerRegistro();
+  });
+
+  async function fazerLogin() {
+    const email = document.getElementById('login-email').value.trim();
+    const senha = document.getElementById('login-senha').value;
+    const erroEl = document.getElementById('login-erro');
+
+    erroEl.classList.add('hidden');
+
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, senha })
+    });
+    const data = await res.json();
+
+    if (data.sucesso) {
+      if (data.tipo === 'professor') {
+      window.location.href = '/professor.html';
+    } else {
+
+      const meRes = await fetch('/api/auth/me').then(r=>r.json());
+      const unidsRes = await fetch('/api/unidades').then(r=>r.json());
+      if (unidsRes.diagnostico_feito === 0) {
+        window.location.href = '/diagnostico.html';
+      } else {
+        window.location.href = '/dashboard.html';
+      }
+    }
+    } else {
+      erroEl.textContent = data.erro;
+      erroEl.classList.remove('hidden');
+    }
+  }
+
+  async function fazerRegistro() {
+    const nome  = document.getElementById('reg-nome').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const senha = document.getElementById('reg-senha').value;
+    const tipo  = document.getElementById('reg-tipo').value;
+    const erroEl = document.getElementById('reg-erro');
+
+    erroEl.classList.add('hidden');
+
+    if (!nome || !email || !senha) {
+      erroEl.textContent = 'Preencha todos os campos.';
+      erroEl.classList.remove('hidden');
+      return;
+    }
+
+    const res = await fetch('/api/auth/registro', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nome, email, senha, tipo })
+    });
+    const data = await res.json();
+
+    if (data.sucesso) {
+      if (tipo === 'professor') {
+        window.location.href = '/professor.html';
+      } else {
+        window.location.href = '/diagnostico.html';
+      }
+    } else {
+      erroEl.textContent = data.erro;
+      erroEl.classList.remove('hidden');
+    }
+  }
+
+  document.addEventListener('keypress', e => {
+    if (e.key === 'Enter') {
+      const loginVis = !document.getElementById('form-login').classList.contains('hidden');
+      if (loginVis) fazerLogin(); else fazerRegistro();
+    }
+  });
+</script>
+<script src="/js/mascote.js" defer></script>
+</body>
+</html>

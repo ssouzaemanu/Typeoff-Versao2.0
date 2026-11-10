@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <meta name="description" content="Typeoff: painel do estudante com as unidades do curso de lógica de programação comparando Python, Java e C.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typeoff: Dashboard</title>
+  <script src="/js/tema.js"></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mascote.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-content">
+    <header class="topbar">
+      <div>
+        <h1 class="topbar-title">Dashboard</h1>
+        <div class="topbar-breadcrumb" id="breadcrumb">Carregando...</div>
+      </div>
+      <div id="av-final-btn" class="hidden">
+        <a href="/avaliacao-final.html" class="btn btn-gold btn-sm">✦ Avaliação Final</a>
+      </div>
+    </header>
+    <main class="page-body" id="conteudo-principal" tabindex="-1">
+      <div class="stats-grid stats-compacto" id="stats-grid" role="group" aria-label="Resumo do seu progresso">
+        <div class="stat-card"><div class="stat-numero" id="stat-unidades">..</div><div class="stat-label">unidades concluídas</div></div>
+        <div class="stat-card"><div class="stat-numero" id="stat-exercicios">..</div><div class="stat-label">exercícios feitos</div></div>
+        <div class="stat-card"><div class="stat-numero" id="stat-acertos">...%</div><div class="stat-label">de acertos</div></div>
+      </div>
+
+      <div id="banner-diagnostico" class="hidden" style="background:linear-gradient(135deg,var(--azul-escuro),var(--azul-medio));border-radius:10px;padding:1rem 1.5rem;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">
+        <div>
+          <div style="font-family:var(--fonte-codigo);font-size:.95rem;font-weight:700;color:var(--offwhite);margin-bottom:.2rem">Comece pelo diagnóstico</div>
+          <div style="font-family:var(--fonte-codigo);font-size:.8rem;color:rgba(242, 237, 228, 0.86)">Descubra por onde começar e libere as unidades.</div>
+        </div>
+        <a href="/diagnostico.html" class="btn btn-gold">Fazer diagnóstico</a>
+      </div>
+
+      <h2 class="mb-1">Unidades</h2>
+      <p class="text-muted mb-3" style="font-size:.8rem;font-family:var(--fonte-codigo)">Meta de 80% para liberar a próxima.</p>
+      <div class="unidades-grid" id="unidades-grid"></div>
+    </main>
+  </div>
+</div>
+<script src="/js/app.js"></script>
+<script>
+async function iniciar() {
+  const usuario = await verificarLogin('estudante');
+  if (!usuario) return;
+
+  const [progRes, unidadesRes] = await Promise.all([
+    fetch('/api/progresso').then(r=>r.json()),
+    fetch('/api/unidades').then(r=>r.json())
+  ]);
+
+  document.getElementById('breadcrumb').textContent = `Olá, ${usuario.nome}`;
+
+  if (!unidadesRes.diagnostico_feito) {
+    document.getElementById('banner-diagnostico').classList.remove('hidden');
+    document.getElementById('banner-diagnostico').style.display='flex';
+  }
+
+  if (unidadesRes.pode_avaliacao_final) {
+    document.getElementById('av-final-btn').classList.remove('hidden');
+  }
+
+  if (progRes.sucesso) {
+    const{estatisticas,progresso}=progRes;
+    const concluidas=progresso.filter(p=>p.status==='concluida').length;
+    document.getElementById('stat-unidades').textContent=concluidas;
+    document.getElementById('stat-exercicios').textContent=estatisticas.total_respostas;
+    document.getElementById('stat-acertos').textContent=`${estatisticas.percentual_geral}%`;
+  }
+
+  if (unidadesRes.sucesso) {
+    await renderizarSidebar(usuario, unidadesRes.unidades, 'dashboard');
+    renderizarUnidades(unidadesRes.unidades, unidadesRes.diagnostico);
+  }
+}
+
+function renderizarUnidades(unidades, diagnostico) {
+  const grid = document.getElementById('unidades-grid');
+  if (!unidades.length) {
+    grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon" aria-hidden="true">📚</div><div class="empty-title">Nenhuma unidade disponível</div></div>`;
+    return;
+  }
+  const destino = diagnostico && diagnostico.destino ? parseInt(diagnostico.destino, 10) : null;
+  grid.innerHTML = unidades.map(u => {
+    const lbl={concluida:'Concluída',em_andamento:'Em andamento',bloqueada:'Bloqueada'};
+    const bc={concluida:'badge-concluida',em_andamento:'badge-andamento',bloqueada:'badge-bloqueada'};
+    const ic={concluida:'✓',em_andamento:'▶',bloqueada:'⊘'};
+    const clicavel=u.status!=='bloqueada';
+    const recomendada = destino !== null && !isNaN(destino) && u.ordem === destino && u.status !== 'concluida' && clicavel;
+    const tag = clicavel ? 'a' : 'div';
+    const attrs = clicavel ? `href="/unidade.html?id=${u.id}"` : `role="group" aria-label="Unidade ${u.ordem}: ${escHtml(u.titulo)} (bloqueada)"`;
+    return `
+      <${tag} class="unidade-card ${u.status}${recomendada?' recomendada':''}" ${attrs}>
+        <div class="unidade-numero">Unidade ${u.ordem}${recomendada?'<span class="selo-recomendada" title="Indicada pelo seu diagnóstico inicial">★ Recomendada</span>':''}</div>
+        <h3 class="unidade-titulo">${escHtml(u.titulo)}</h3>
+        <span class="sr-descricao">${escHtml(u.descricao||'')}</span>
+        <div class="unidade-footer">
+          <span class="badge ${bc[u.status]}">${lbl[u.status]||u.status}</span>
+          <span class="font-mono" style="font-size:.78rem;color:var(--cinza-medio)">${Math.round(u.percentual)}%</span>
+        </div>
+        <div class="progress-bar-wrap" aria-hidden="true"><div class="progress-bar-fill" style="width:${u.percentual}%"></div></div>
+      </${tag}>`;
+  }).join('');
+}
+iniciar();
+</script>
+<script src="/js/mascote.js" defer></script>
+</body>
+</html>

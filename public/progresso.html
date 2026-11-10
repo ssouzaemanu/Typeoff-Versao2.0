@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <meta name="description" content="Typeoff: acompanhe seu progresso, desempenho por unidade e conquistas no curso de lógica de programação.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typeoff: Meu Progresso</title>
+  <script src="/js/tema.js"></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mascote.css">
+  <style>
+
+    .timeline { position:relative; padding-left:2.5rem; }
+    .timeline::before {
+      content:''; position:absolute; left:.85rem; top:0; bottom:0;
+      width:2px; background:var(--cinza-claro);
+    }
+    .tl-item { position:relative; margin-bottom:1.5rem; }
+    .tl-dot {
+      position:absolute; left:-1.8rem; top:.25rem;
+      width:20px; height:20px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:.65rem; font-weight:700; flex-shrink:0;
+      border:2px solid white; z-index:1;
+    }
+    .tl-dot.concluida  {background:var(--sucesso);color:white;}
+    .tl-dot.andamento  {background:var(--dourado);color:#1B2A6B;}
+    .tl-dot.bloqueada  {background:var(--cinza-claro);color:var(--cinza-medio);}
+    .tl-card {
+      background:var(--superficie); border-radius:var(--raio);
+      border:1px solid var(--cinza-claro);
+      padding:1rem 1.25rem;
+      transition:var(--transicao);
+    }
+    .tl-card:hover{box-shadow:var(--sombra);}
+    .tl-card.concluida{border-left:3px solid var(--sucesso);}
+    .tl-card.andamento {border-left:3px solid var(--dourado);}
+    .tl-card.bloqueada {border-left:3px solid var(--cinza-claro);opacity:.65;}
+    .tl-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:.5rem; }
+    .tl-titulo { font-family:var(--fonte-codigo); font-size:.9rem; font-weight:700; color:var(--titulo); }
+    .tl-pct    { font-family:var(--fonte-codigo); font-size:.85rem; font-weight:700; }
+    .tl-pct.concluida{color:var(--sucesso-texto);}
+    .tl-pct.andamento{color:var(--dourado-texto);}
+
+    .heatmap {
+      display:grid;
+      grid-template-columns: repeat(5,1fr);
+      gap:.5rem; margin-top:.75rem;
+    }
+    .heat-cell {
+      aspect-ratio:1;
+      border-radius:6px;
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      font-family:var(--fonte-codigo);font-size:.65rem;font-weight:700;
+      cursor:default;transition:var(--transicao);
+    }
+    .heat-cell:hover{transform:scale(1.05);}
+    .heat-cell .h-val{font-size:1rem;font-weight:700;}
+
+    .ev-card {
+      border-radius:var(--raio); padding:1.25rem;
+      border:1px solid var(--cinza-claro); background:var(--superficie);
+    }
+    .ev-card-title {
+      font-family:var(--fonte-codigo); font-size:.72rem;
+      text-transform:uppercase; letter-spacing:.1em;
+      color:var(--cinza-medio); margin-bottom:.75rem;
+    }
+    .ev-score {
+      font-family:var(--fonte-codigo); font-size:2.5rem;
+      font-weight:700; line-height:1;
+    }
+    .ev-score.ok  {color:var(--sucesso-texto);}
+    .ev-score.fail{color:var(--erro);}
+    .ev-score.pend{color:var(--cinza-medio);}
+  </style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-content">
+    <header class="topbar">
+      <div>
+        <h1 class="topbar-title">Meu Progresso</h1>
+        <div class="topbar-breadcrumb">Acompanhe seu desempenho</div>
+      </div>
+      <div id="btn-av-final"></div>
+    </header>
+    <main class="page-body" id="conteudo-principal" tabindex="-1">
+
+      <div class="stats-grid stats-compacto" role="group" aria-label="Resumo do desempenho">
+        <div class="stat-card"><div class="stat-numero" id="s-geral">...%</div><div class="stat-label">desempenho geral</div></div>
+        <div class="stat-card"><div class="stat-numero" id="s-respostas">..</div><div class="stat-label">questões respondidas</div></div>
+        <div class="stat-card"><div class="stat-numero" id="s-acertos">..</div><div class="stat-label">acertos</div></div>
+        <div class="stat-card"><div class="stat-numero" id="s-concluidas">..</div><div class="stat-label">unidades concluídas</div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem" id="ev-grid">
+
+        <div class="ev-card">
+          <div class="ev-card-title">🎯 Diagnóstico Inicial</div>
+          <div id="diag-content">
+            <div class="ev-score pend">...%</div>
+            <p style="font-family:var(--fonte-codigo);font-size:.78rem;color:var(--cinza-medio);margin-top:.4rem">Não realizado</p>
+            <a href="/diagnostico.html" class="btn btn-secondary btn-sm mt-2">Fazer agora</a>
+          </div>
+        </div>
+
+        <div class="ev-card">
+          <div class="ev-card-title">📝 Avaliação Final</div>
+          <div id="av-content">
+            <div class="ev-score pend">...%</div>
+            <p style="font-family:var(--fonte-codigo);font-size:.78rem;color:var(--cinza-medio);margin-top:.4rem">Não disponível</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <h2 class="mb-2" style="font-size:.95rem">Desempenho por Unidade</h2>
+        <div class="heatmap" id="heatmap"></div>
+      </div>
+
+      <details class="card sanfona-simples">
+        <summary style="cursor:pointer;font-family:var(--fonte-codigo);font-weight:700;font-size:.95rem;color:var(--titulo);min-height:40px;display:flex;align-items:center"><h2 style="font-size:.95rem;margin:0">Jornada de aprendizagem</h2></summary>
+        <div class="timeline mt-2" id="timeline"></div>
+      </details>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+<script>
+async function iniciar(){
+  const usuario = await verificarLogin('estudante');
+  if(!usuario)return;
+
+  const [unidsRes, progRes] = await Promise.all([
+    fetch('/api/unidades').then(r=>r.json()),
+    fetch('/api/progresso').then(r=>r.json())
+  ]);
+
+  renderizarSidebar(usuario, unidsRes.unidades||[], 'progresso');
+
+  if(!progRes.sucesso)return;
+
+  const{estatisticas,progresso,diagnostico,avaliacao_final,pode_avaliacao_final}=progRes;
+
+  document.getElementById('s-geral').textContent      = estatisticas.percentual_geral+'%';
+  document.getElementById('s-respostas').textContent  = estatisticas.total_respostas;
+  document.getElementById('s-acertos').textContent    = estatisticas.total_acertos;
+  document.getElementById('s-concluidas').textContent = progresso.filter(p=>p.status==='concluida').length;
+
+  if(pode_avaliacao_final){
+    document.getElementById('btn-av-final').innerHTML=`
+      <a href="/avaliacao-final.html" class="btn btn-gold btn-sm">✦ Avaliação Final</a>`;
+  }
+
+  if(diagnostico){
+    const ok=diagnostico.percentual>=60;
+    document.getElementById('diag-content').innerHTML=`
+      <div class="ev-score ${ok?'ok':'fail'}">${diagnostico.percentual}%</div>
+      <p style="font-family:var(--fonte-codigo);font-size:.78rem;color:var(--cinza-medio);margin-top:.4rem">
+        ${diagnostico.acertos} de ${diagnostico.total} acertos${diagnostico.tempo_ms!=null?' · '+formatarDuracao(diagnostico.tempo_ms):''}
+      </p>
+      <p style="font-family:var(--fonte-codigo);font-size:.75rem;color:var(--azul-texto);margin-top:.2rem">
+        Destino: ${diagnostico.destino==='avaliacao_final'?'Avaliação Final':'Unidade '+diagnostico.destino}
+      </p>`;
+  }
+
+  if(avaliacao_final){
+    const apr=avaliacao_final.aprovado===1||avaliacao_final.aprovado===true;
+    document.getElementById('av-content').innerHTML=`
+      <div class="ev-score ${apr?'ok':'fail'}">${avaliacao_final.percentual}%</div>
+      <p style="font-family:var(--fonte-codigo);font-size:.78rem;color:${apr?'var(--sucesso-texto)':'var(--erro-texto)'};margin-top:.4rem">
+        ${apr?'✓ Aprovado':'✗ Não aprovado'}${avaliacao_final.tempo_ms!=null?' · '+formatarDuracao(avaliacao_final.tempo_ms):''}
+      </p>
+      ${apr?`<a href="/certificado.html" class="btn btn-gold btn-sm mt-2">✦ Certificado</a>`:''}`;
+  } else if(pode_avaliacao_final){
+    document.getElementById('av-content').innerHTML=`
+      <div class="ev-score pend" style="font-size:1.5rem;color:var(--dourado-texto)">Disponível!</div>
+      <p style="font-family:var(--fonte-codigo);font-size:.78rem;color:var(--cinza-medio);margin-top:.4rem">Você pode realizar agora</p>
+      <a href="/avaliacao-final.html" class="btn btn-gold btn-sm mt-2">→ Acessar</a>`;
+  }
+
+  const hm=document.getElementById('heatmap');
+  hm.innerHTML=progresso.map(u=>{
+    const pct=Math.round(u.percentual||0);
+    let bg,fg;
+    if(u.status==='concluida'){bg='rgba(39,174,96,.15)';fg='var(--sucesso-texto)';}
+    else if(u.status==='em_andamento'&&pct>0){bg='rgba(201,169,110,.2)';fg='#6b4e1a';}
+    else if(u.status==='em_andamento'){bg='rgba(74,111,165,.1)';fg='var(--azul-medio)';}
+    else{bg='rgba(154,149,144,.1)';fg='var(--cinza-medio)';}
+    return`<div class="heat-cell" style="background:${bg};color:${fg}" title="${u.titulo}">
+      <span class="h-val">${u.status==='concluida'?'✓':pct+'%'}</span>
+      <span style="font-size:.6rem;margin-top:2px">U${u.ordem}</span>
+    </div>`;
+  }).join('');
+
+  const tl=document.getElementById('timeline');
+  tl.innerHTML=progresso.map(u=>{
+    const pct=Math.round(u.percentual||0);
+    const dotClass=u.status==='concluida'?'concluida':u.status==='em_andamento'?'andamento':'bloqueada';
+    const lbl={concluida:'✓',em_andamento:'▶',bloqueada:'⊘'};
+    const statusLbl={concluida:'Concluída',em_andamento:'Em andamento',bloqueada:'Bloqueada'};
+    return`<div class="tl-item">
+      <div class="tl-dot ${dotClass}">${lbl[u.status]||'○'}</div>
+      <div class="tl-card ${dotClass}">
+        <div class="tl-header">
+          <span class="tl-titulo">Unidade ${u.ordem}, ${u.titulo}</span>
+          <span class="tl-pct ${dotClass}">${u.status==='concluida'?'100%':pct+'%'}</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" style="width:${u.status==='concluida'?100:pct}%"></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:.5rem">
+          <span class="badge badge-${dotClass==='andamento'?'andamento':dotClass}">${statusLbl[u.status]}</span>
+          ${u.status==='em_andamento'?`<a href="/unidade.html?id=${u.id}" class="btn btn-primary btn-sm">Continuar →</a>`:''}
+          ${u.status==='concluida'?`<a href="/unidade.html?id=${u.id}" class="btn btn-secondary btn-sm" style="font-size:.72rem">Revisar</a>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+iniciar();
+</script>
+<script src="/js/mascote.js" defer></script>
+</body>
+</html>

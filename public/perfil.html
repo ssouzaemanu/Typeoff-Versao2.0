@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <meta name="description" content="Typeoff: edite seus dados de conta e acompanhe seu desempenho no curso de lógica de programação.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typeoff: Meu Perfil</title>
+  <script src="/js/tema.js"></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mascote.css">
+  <style>
+    .perfil-hero {
+      background: linear-gradient(135deg, var(--azul-escuro) 0%, var(--azul-medio) 100%);
+      border-radius: 10px;
+      padding: 2rem;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .perfil-hero::after {
+      content: '</>';
+      position: absolute;
+      right: 1.5rem; top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--fonte-codigo);
+      font-size: 5rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.9);
+      pointer-events: none;
+    }
+    .perfil-avatar-grande {
+      width: 72px; height: 72px;
+      background: var(--dourado);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--fonte-codigo);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--titulo);
+      flex-shrink: 0;
+      border: 3px solid rgba(255,255,255,0.25);
+    }
+    .perfil-hero-info { flex: 1; }
+    .perfil-hero-nome {
+      font-family: var(--fonte-codigo);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    .perfil-hero-meta {
+      font-family: var(--fonte-codigo);
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    .perfil-badge {
+      background: var(--dourado);
+      color: var(--titulo);
+      font-family: var(--fonte-codigo);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: inline-block;
+      margin-top: 0.4rem;
+    }
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px,1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-mini {
+      background: var(--superficie);
+      border: 1px solid var(--cinza-claro);
+      border-radius: var(--raio);
+      padding: 1rem;
+      text-align: center;
+    }
+    .stat-mini-num {
+      font-family: var(--fonte-codigo);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--titulo);
+      line-height: 1;
+    }
+    .stat-mini-label {
+      font-family: var(--fonte-codigo);
+      font-size: 0.68rem;
+      color: var(--cinza-medio);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-top: 0.25rem;
+    }
+    .form-dois-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media(max-width:600px){ .form-dois-col{ grid-template-columns:1fr; } }
+    .secao-titulo {
+      font-family: var(--fonte-codigo);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--cinza-medio);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--cinza-claro);
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-content">
+    <header class="topbar">
+      <div>
+        <h1 class="topbar-title">Meu Perfil</h1>
+        <div class="topbar-breadcrumb" id="breadcrumb">Carregando...</div>
+      </div>
+    </header>
+    <main class="page-body" id="conteudo-principal" tabindex="-1">
+
+      <div class="perfil-hero" id="perfil-hero">
+        <div class="perfil-avatar-grande" id="avatar">??</div>
+        <div class="perfil-hero-info">
+          <div class="perfil-hero-nome" id="perfil-nome">..</div>
+          <div class="perfil-hero-meta" id="perfil-email">..</div>
+          <div class="perfil-hero-meta" id="perfil-desde">..</div>
+          <span class="perfil-badge" id="perfil-tipo">..</span>
+        </div>
+      </div>
+
+      <div id="stats-aluno" class="hidden">
+        <div class="stats-row">
+          <div class="stat-mini"><div class="stat-mini-num" id="s-geral">...%</div><div class="stat-mini-label">Desempenho geral</div></div>
+          <div class="stat-mini"><div class="stat-mini-num" id="s-respostas">..</div><div class="stat-mini-label">Questões respondidas</div></div>
+          <div class="stat-mini"><div class="stat-mini-num" id="s-acertos">..</div><div class="stat-mini-label">Acertos</div></div>
+          <div class="stat-mini"><div class="stat-mini-num" id="s-unidades">..</div><div class="stat-mini-label">Unidades concluídas</div></div>
+        </div>
+
+        <div class="card mb-3">
+          <h2 class="secao-titulo">Progresso no curso</h2>
+          <div style="display:flex;align-items:center;gap:1rem">
+            <div class="progress-bar-wrap" style="flex:1" role="progressbar" aria-label="Progresso no curso" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="barra-curso-wrap">
+              <div class="progress-bar-fill" id="barra-curso" style="width:0%"></div>
+            </div>
+            <span class="font-mono" style="font-size:0.85rem;color:var(--titulo);font-weight:700" id="pct-curso">0%</span>
+          </div>
+          <div id="msg-certificado" class="hidden mt-2" style="font-family:var(--fonte-codigo);font-size:0.82rem;color:var(--sucesso-texto)">
+            ✦ Você concluiu o curso! Acesse a página de <a href="/certificado.html">Certificado</a> para emitir o seu.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="secao-titulo">Editar dados da conta</h2>
+        <div class="form-dois-col">
+          <div class="form-group">
+            <label for="edit-nome">Nome completo</label>
+            <input type="text" id="edit-nome" name="nome" autocomplete="name" placeholder="Seu nome" aria-describedby="edit-erro">
+          </div>
+          <div class="form-group">
+            <label for="edit-email">E-mail</label>
+            <input type="email" id="edit-email" name="email" autocomplete="email" placeholder="seu@email.com" aria-describedby="edit-erro">
+          </div>
+        </div>
+        <h3 class="secao-titulo mt-3">Alterar senha (deixe em branco para não alterar)</h3>
+        <div class="form-dois-col">
+          <div class="form-group">
+            <label for="edit-senha-atual">Senha atual</label>
+            <input type="password" id="edit-senha-atual" name="senha_atual" autocomplete="current-password" placeholder="••••••••" aria-describedby="edit-erro">
+          </div>
+          <div class="form-group">
+            <label for="edit-nova-senha">Nova senha</label>
+            <input type="password" id="edit-nova-senha" name="nova_senha" autocomplete="new-password" placeholder="••••••••" aria-describedby="edit-erro">
+          </div>
+        </div>
+        <div id="edit-erro" class="form-erro hidden" role="alert"></div>
+        <button type="button" class="btn btn-primary mt-2" onclick="salvarPerfil()">Salvar alterações</button>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+<script>
+  async function iniciar() {
+    const usuario = await verificarLogin();
+    if (!usuario) return;
+
+    const [perfilRes, unidadesRes] = await Promise.all([
+      fetch('/api/perfil').then(r=>r.json()),
+      usuario.tipo==='estudante' ? fetch('/api/unidades').then(r=>r.json()) : Promise.resolve({unidades:[]})
+    ]);
+
+    renderizarSidebar(usuario, unidadesRes.unidades||[], 'perfil');
+    document.getElementById('breadcrumb').textContent = usuario.nome;
+
+    if (!perfilRes.sucesso) return;
+    const p = perfilRes.perfil;
+
+    const iniciais = p.nome.split(' ').map(n=>n[0]).slice(0,2).join('').toUpperCase();
+    document.getElementById('avatar').textContent    = iniciais;
+    document.getElementById('perfil-nome').textContent  = p.nome;
+    document.getElementById('perfil-email').textContent = p.email;
+    document.getElementById('perfil-desde').textContent = 'Membro desde ' + formatarData(p.criado_em);
+    document.getElementById('perfil-tipo').textContent  = p.tipo === 'professor' ? 'Professor' : 'Estudante';
+
+    document.getElementById('edit-nome').value  = p.nome;
+    document.getElementById('edit-email').value = p.email;
+
+    if (p.tipo === 'estudante') {
+      document.getElementById('stats-aluno').classList.remove('hidden');
+      document.getElementById('s-geral').textContent    = p.percentual_geral + '%';
+      document.getElementById('s-respostas').textContent = p.total_respostas;
+      document.getElementById('s-acertos').textContent   = p.total_acertos;
+      document.getElementById('s-unidades').textContent  = p.unidades_concluidas;
+
+      const pctCurso = p.total_unidades > 0 ? Math.round((p.unidades_concluidas / p.total_unidades)*100) : 0;
+      document.getElementById('barra-curso').style.width = pctCurso + '%';
+      document.getElementById('barra-curso-wrap').setAttribute('aria-valuenow', pctCurso);
+      document.getElementById('pct-curso').textContent   = pctCurso + '%';
+
+      if (p.curso_concluido) {
+        document.getElementById('msg-certificado').classList.remove('hidden');
+      }
+    }
+  }
+
+  async function salvarPerfil() {
+    const nome       = document.getElementById('edit-nome').value.trim();
+    const email      = document.getElementById('edit-email').value.trim();
+    const senhaAtual = document.getElementById('edit-senha-atual').value;
+    const novaSenha  = document.getElementById('edit-nova-senha').value;
+    const erroEl     = document.getElementById('edit-erro');
+    erroEl.classList.add('hidden');
+
+    ['edit-nome','edit-email'].forEach(i=>document.getElementById(i).removeAttribute('aria-invalid'));
+    if (!nome || !email) {
+      erroEl.textContent='Preencha nome e e-mail.'; erroEl.classList.remove('hidden');
+      if (!nome) document.getElementById('edit-nome').setAttribute('aria-invalid','true');
+      if (!email) document.getElementById('edit-email').setAttribute('aria-invalid','true');
+      (nome ? document.getElementById('edit-email') : document.getElementById('edit-nome')).focus();
+      return;
+    }
+
+    const res  = await fetch('/api/perfil/atualizar',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({nome,email,senha_atual:senhaAtual,nova_senha:novaSenha})});
+    const data = await res.json();
+
+    if (data.sucesso) {
+      mostrarToast('Perfil atualizado!','sucesso');
+      document.getElementById('edit-senha-atual').value = '';
+      document.getElementById('edit-nova-senha').value  = '';
+      document.getElementById('perfil-nome').textContent  = nome;
+      document.getElementById('perfil-email').textContent = email;
+      const iniciais = nome.split(' ').map(n=>n[0]).slice(0,2).join('').toUpperCase();
+      document.getElementById('avatar').textContent = iniciais;
+    } else {
+      erroEl.textContent = data.erro || 'Erro ao salvar.';
+      erroEl.classList.remove('hidden');
+      document.getElementById('edit-senha-atual').focus();
+    }
+  }
+
+  iniciar();
+</script>
+<script src="/js/mascote.js" defer></script>
+</body>
+</html>

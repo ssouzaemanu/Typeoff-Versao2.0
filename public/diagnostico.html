@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <meta name="description" content="Typeoff: diagnóstico inicial para indicar a unidade mais adequada ao seu nível de conhecimento.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typeoff: Diagnóstico Inicial</title>
+  <script src="/js/tema.js"></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mascote.css">
+  <style>
+    body {
+      background: var(--fundo-pagina);
+      min-height: 100vh;
+    }
+    .diag-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 2rem 5rem;
+      background: linear-gradient(145deg, #e8e3da 0%, var(--fundo-pagina) 60%, #dfe4ed 100%);
+    }
+    .diag-card {
+      background: var(--superficie);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 700px;
+      box-shadow: 0 8px 40px rgba(27,42,107,.13);
+      overflow: hidden;
+      border: 1px solid rgba(27,42,107,.08);
+    }
+    .diag-header {
+      background: var(--superficie);
+      padding: 1.5rem 2rem 1rem;
+      border-bottom: 1px solid rgba(27,42,107,.08);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .diag-header-logo {
+      width: 42px; height: 42px;
+      background: var(--azul-escuro);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--fonte-codigo);
+      font-weight: 700; color: var(--dourado);
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .diag-header-info { flex: 1; }
+    .diag-header h1 {
+      font-family: var(--fonte-codigo);
+      font-size: 1.05rem;
+      color: var(--titulo);
+      font-weight: 700;
+      margin-bottom: .15rem;
+    }
+    .diag-header p {
+      font-family: var(--fonte-codigo);
+      font-size: .75rem;
+      color: var(--cinza-medio);
+    }
+    .diag-progress-bar { height: 3px; background: var(--cinza-claro); }
+    .diag-progress-fill { height: 100%; background: var(--azul-medio); transition: width .5s ease; }
+    .diag-body { padding: 2rem; }
+
+    .regras-list {
+      background: var(--superficie);
+      border: 1px solid rgba(27,42,107,.1);
+      border-radius: var(--raio);
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+    .regras-titulo {
+      background: var(--azul-escuro);
+      color: var(--offwhite);
+      font-family: var(--fonte-codigo);
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      padding: .6rem 1rem;
+    }
+    .regra-item {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      font-family: var(--fonte-codigo);
+      font-size: .83rem;
+      color: var(--titulo);
+      padding: .65rem 1rem;
+      border-bottom: 1px solid rgba(27,42,107,.06);
+      transition: background .15s;
+    }
+    .regra-item:last-child { border-bottom: none; }
+    .regra-item:hover { background: rgba(74,111,165,.04); }
+    .regra-pct {
+      background: var(--azul-escuro);
+      color: var(--dourado);
+      font-weight: 700;
+      font-size: .72rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      min-width: 52px;
+      text-align: center;
+    }
+    .regra-dest {
+      color: var(--texto);
+      font-size: .82rem;
+      font-weight: 500;
+    }
+    .regra-seta {
+      color: var(--azul-texto);
+      font-size: .8rem;
+      flex-shrink: 0;
+    }
+
+    .q-num {
+      font-family: var(--fonte-codigo);
+      font-size: .72rem;
+      color: var(--cinza-medio);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: .75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .q-unidade-tag {
+      background: rgba(74,111,165,.1);
+      color: var(--azul-texto);
+      font-size: .68rem;
+      padding: 2px 9px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .q-texto {
+      font-family: var(--fonte-codigo);
+      font-size: .93rem;
+      font-weight: 500;
+      color: var(--titulo);
+      line-height: 1.65;
+      padding: 1.25rem 1.5rem;
+      background: rgba(27,42,107,.03);
+      border-radius: var(--raio);
+      border-left: 4px solid var(--azul-medio);
+      margin-bottom: 1.25rem;
+    }
+    .q-texto pre {
+      background: var(--azul-escuro);
+      color: var(--offwhite);
+      padding: .875rem 1rem;
+      border-radius: 6px;
+      font-size: .8rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      margin-top: .75rem;
+    }
+    .q-opcoes { display: flex; flex-direction: column; gap: .55rem; margin-bottom: 1.25rem; }
+    .q-opcao {
+      display: flex; align-items: flex-start; gap: .75rem;
+      padding: .72rem 1rem;
+      border: 1.5px solid var(--cinza-claro);
+      border-radius: var(--raio);
+      cursor: pointer;
+      font-family: var(--fonte-codigo);
+      font-size: .84rem;
+      background: var(--superficie);
+      text-align: left;
+      width: 100%;
+      transition: var(--transicao);
+      color: var(--tinta);
+    }
+    .q-opcao:hover:not(:disabled) { border-color: var(--azul-medio); background: rgba(74,111,165,.04); }
+    .q-opcao.sel    { border-color: var(--azul-medio); background: rgba(74,111,165,.07); }
+    .q-opcao.certa  { border-color: var(--sucesso); background: rgba(39,174,96,.08); color: var(--fb-ok); }
+    .q-opcao.errada { border-color: var(--erro);    background: rgba(192,57,43,.07);  color: var(--fb-err); }
+    .q-letra { font-size: .7rem; color: var(--cinza-medio); min-width: 18px; font-weight: 700; flex-shrink: 0; padding-top: 1px; }
+    .fb-box {
+      padding: .9rem 1.1rem;
+      border-radius: var(--raio);
+      font-family: var(--fonte-codigo);
+      font-size: .82rem;
+      border-left: 4px solid;
+      line-height: 1.65;
+      margin-bottom: .75rem;
+    }
+    .fb-ok  { background: rgba(39,174,96,.07);  border-color: var(--sucesso); color: var(--fb-ok); }
+    .fb-err { background: rgba(192,57,43,.07);  border-color: var(--erro);    color: var(--fb-err); }
+
+    .res-score {
+      font-family: var(--fonte-codigo);
+      font-size: 4.5rem;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1;
+      color: var(--titulo);
+      margin-bottom: .5rem;
+    }
+    .res-sub {
+      text-align: center;
+      font-family: var(--fonte-codigo);
+      font-size: .88rem;
+      color: var(--cinza-medio);
+      margin-bottom: 1.5rem;
+    }
+    .res-destino {
+      background: rgba(27,42,107,.05);
+      border-radius: var(--raio);
+      padding: 1.25rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      border: 2px solid var(--azul-medio);
+    }
+    .res-destino-label {
+      font-family: var(--fonte-codigo);
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--cinza-medio);
+      margin-bottom: .4rem;
+    }
+    .res-destino-valor {
+      font-family: var(--fonte-codigo);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--titulo);
+    }
+
+    .destaque-info {
+      background: rgba(201,169,110,.12);
+      border-left: 3px solid var(--dourado);
+      border-radius: 0 var(--raio) var(--raio) 0;
+      padding: .75rem 1rem;
+      font-family: var(--fonte-codigo);
+      font-size: .8rem;
+      color: var(--fb-info);
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+    }
+    .destaque-info strong { color: var(--fb-info-forte); }
+  </style>
+</head>
+<body>
+<main class="diag-wrapper" id="conteudo-principal">
+  <div class="diag-card">
+
+    <div class="diag-header">
+      <div class="diag-header-logo">&lt;/&gt;</div>
+      <div class="diag-header-info">
+        <h1>Diagnóstico Inicial</h1>
+        <p id="diag-header-sub">Avaliação de conhecimento prévio, 10 questões</p>
+      </div>
+    </div>
+
+    <div class="diag-progress-bar">
+      <div class="diag-progress-fill" id="diag-fill" style="width:0%"></div>
+    </div>
+
+    <div class="diag-body" id="diag-body">
+      <div style="text-align:center;padding:2rem;font-family:var(--fonte-codigo);color:var(--cinza-medio)">
+        Carregando...
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="/js/app.js"></script>
+<script>
+let questoes = [], respostas = [], indice = 0, respondidas = new Set();
+const cron = criarCronometro();
+
+async function iniciar() {
+  const usuario = await verificarLogin('estudante');
+  if (!usuario) return;
+
+  const res = await fetch('/api/diagnostico').then(r => r.json());
+
+  if (res.feito) {
+    window.location.href = '/dashboard.html';
+    return;
+  }
+
+  if (!res.questoes || res.questoes.length === 0) {
+    await criarProgressoPadrao();
+    window.location.href = '/dashboard.html';
+    return;
+  }
+
+  questoes = res.questoes;
+  respostas = new Array(questoes.length).fill(null);
+  mostrarIntro();
+}
+
+async function criarProgressoPadrao() {
+  await fetch('/api/diagnostico/submeter', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ respostas: [] })
+  });
+}
+
+function mostrarIntro() {
+  document.getElementById('diag-header-sub').textContent = 'Avaliação de conhecimento prévio, 10 questões';
+  document.getElementById('diag-fill').style.width = '0%';
+  document.getElementById('diag-body').innerHTML = `
+    <p style="font-family:var(--fonte-texto);font-size:.92rem;color:var(--texto);line-height:1.8;margin-bottom:1.25rem;text-align:center">
+      Antes de começar, responda 10 questões rápidas sobre programação.<br>
+      Com base no seu desempenho, você será direcionado para a unidade mais adequada ao seu nível.
+    </p>
+
+    <div class="destaque-info">
+      <strong>Como funciona o remanejamento:</strong> suas respostas determinam o ponto de partida ideal no curso. Não existe resposta certa ou errada do ponto de vista da avaliação, o objetivo é encontrar onde você está agora.
+    </div>
+
+    <div class="regras-list">
+      <div class="regras-titulo">Critérios de direcionamento</div>
+      <div class="regra-item">
+        <span class="regra-pct">≥ 20%</span>
+        <span class="regra-seta">→</span>
+        <span class="regra-dest">Unidade 1: Introdução à Lógica de Programação</span>
+      </div>
+      <div class="regra-item">
+        <span class="regra-pct">≥ 40%</span>
+        <span class="regra-seta">→</span>
+        <span class="regra-dest">Unidade 2: Conceito de Variáveis</span>
+      </div>
+      <div class="regra-item">
+        <span class="regra-pct">≥ 50%</span>
+        <span class="regra-seta">→</span>
+        <span class="regra-dest">Unidade 3: Estruturas Condicionais</span>
+      </div>
+      <div class="regra-item">
+        <span class="regra-pct">≥ 60%</span>
+        <span class="regra-seta">→</span>
+        <span class="regra-dest">Unidade 4: Estruturas de Repetição</span>
+      </div>
+      <div class="regra-item">
+        <span class="regra-pct">≥ 80%</span>
+        <span class="regra-seta">→</span>
+        <span class="regra-dest">Unidade 5: Comparação entre Linguagens</span>
+      </div>
+      <div class="regra-item">
+        <span class="regra-pct" style="background:var(--dourado);color:var(--titulo)">100%</span>
+        <span class="regra-seta">→</span>
+        <span class="regra-dest" style="color:var(--titulo);font-weight:600">Avaliação Final direto</span>
+      </div>
+    </div>
+
+    <button class="btn btn-primary w-full" style="font-size:.9rem;padding:.85rem" onclick="comecarQuiz()">
+      Iniciar diagnóstico →
+    </button>`;
+}
+
+function comecarQuiz() {
+  indice = 0;
+  cron.iniciar();
+  mostrarQuestao();
+}
+
+function mostrarQuestao() {
+  if (indice >= questoes.length) { submeterRespostas(); return; }
+
+  const q = questoes[indice];
+  cron.marcar();
+  const pct = Math.round((indice / questoes.length) * 100);
+  document.getElementById('diag-fill').style.width = pct + '%';
+  document.getElementById('diag-header-sub').textContent = `Questão ${indice + 1} de ${questoes.length}`;
+
+  const unidadeNomes = { 1: 'Lógica', 2: 'Variáveis', 3: 'Condicionais', 4: 'Repetição', 5: 'Linguagens' };
+  const unidadeTag = q.unidade_id
+    ? `<span class="q-unidade-tag">Unidade ${q.unidade_id}, ${unidadeNomes[q.unidade_id] || ''}</span>`
+    : '';
+
+  let enunciadoHtml = montarEnunciado(q.enunciado);
+  let opcoesHtml = '';
+
+  if (q.tipo === 'multipla_escolha' && q.opcoes) {
+    opcoesHtml = q.opcoes.map((op, i) => `
+      <button class="q-opcao" id="dop-${i}" onclick="selecionarOpcao('${escAttr(op)}', ${i})">
+        <span class="q-letra">${String.fromCharCode(65 + i)}.</span>
+        <span>${op}</span>
+      </button>`).join('');
+  } else {
+    opcoesHtml = `
+      <button class="q-opcao" id="dop-0" onclick="selecionarOpcao('verdadeiro', 0)">
+        <span class="q-letra">V.</span><span>Verdadeiro</span>
+      </button>
+      <button class="q-opcao" id="dop-1" onclick="selecionarOpcao('falso', 1)">
+        <span class="q-letra">F.</span><span>Falso</span>
+      </button>`;
+  }
+
+  document.getElementById('diag-body').innerHTML = `
+    <div class="q-num">
+      <span>Questão ${indice + 1} / ${questoes.length}</span>
+      ${unidadeTag}
+    </div>
+    <div class="progress-bar-wrap mb-3">
+      <div class="progress-bar-fill" style="width:${pct}%"></div>
+    </div>
+    <div class="q-texto">${enunciadoHtml}</div>
+    <div class="q-opcoes">${opcoesHtml}</div>
+    <div id="diag-fb"></div>
+    <div id="diag-btn-next" class="hidden mt-2">
+      <button class="btn btn-primary w-full" onclick="avancar()">
+        ${indice + 1 < questoes.length ? 'Próxima →' : 'Ver resultado →'}
+      </button>
+    </div>`;
+}
+
+function selecionarOpcao(valor, idx) {
+  if (respondidas.has(indice)) return;
+  respondidas.add(indice);
+  respostas[indice] = { exercicio_id: questoes[indice].id, resposta_dada: valor, tempo_ms: Math.round(cron.marcar()) };
+
+  document.querySelectorAll('.q-opcao').forEach(b => b.disabled = true);
+
+  const q = questoes[indice];
+  const correta = valor.trim().toLowerCase() === q.resposta_correta.trim().toLowerCase();
+
+  document.querySelectorAll('.q-opcao').forEach(btn => {
+    const txt = btn.textContent.replace(/^[A-ZVF]\.\s*/, '').trim();
+    if (txt.toLowerCase() === q.resposta_correta.toLowerCase()) btn.classList.add('certa');
+    else if (!correta && txt.toLowerCase() === valor.toLowerCase()) btn.classList.add('errada');
+  });
+
+  document.getElementById('diag-fb').innerHTML = `
+    <div class="fb-box ${correta ? 'fb-ok' : 'fb-err'}">
+      <strong>${correta ? 'Correto!' : 'Incorreto.'}</strong>
+      ${q.explicacao ? `<br>${q.explicacao}` : ''}
+      ${!correta ? `<br>Resposta correta: <strong>${q.resposta_correta}</strong>` : ''}
+    </div>`;
+
+  document.getElementById('diag-btn-next').classList.remove('hidden');
+}
+
+function avancar() {
+  indice++;
+  respondidas.delete(indice);
+  mostrarQuestao();
+}
+
+async function submeterRespostas() {
+  const tempoTotal = Math.round(cron.parar());
+  document.getElementById('diag-fill').style.width = '100%';
+  document.getElementById('diag-header-sub').textContent = 'Calculando resultado...';
+  document.getElementById('diag-body').innerHTML = `
+    <div style="text-align:center;padding:3rem;font-family:var(--fonte-codigo);color:var(--cinza-medio)">
+      Processando suas respostas...
+    </div>`;
+
+  const res = await fetch('/api/diagnostico/submeter', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ respostas: respostas.filter(Boolean), tempo_total_ms: tempoTotal })
+  }).then(r => r.json());
+
+  if (res && res.tempo_ms == null) res.tempo_ms = tempoTotal;
+  mostrarResultado(res);
+}
+
+function mostrarResultado(res) {
+  const destinoLabel = res.destino === 'avaliacao_final'
+    ? 'Avaliação Final, você pode pular direto!'
+    : `Unidade ${res.destino}`;
+
+  document.getElementById('diag-header-sub').textContent = 'Resultado do diagnóstico';
+  document.getElementById('diag-body').innerHTML = `
+    <div class="res-score">${res.percentual}%</div>
+    <div class="res-sub">${res.acertos} de ${res.total} questões corretas${res.tempo_ms != null ? ` · tempo: ${formatarDuracao(res.tempo_ms)}` : ''}</div>
+    <div class="res-destino">
+      <div class="res-destino-label">Você começa em</div>
+      <div class="res-destino-valor">${destinoLabel}</div>
+    </div>
+    <p style="font-family:var(--fonte-codigo);font-size:.82rem;color:var(--cinza-medio);text-align:center;margin-bottom:1.5rem;line-height:1.6">
+      ${res.mensagem || ''}
+    </p>
+    <button class="btn btn-primary w-full" style="font-size:.9rem;padding:.85rem"
+      onclick="window.location.href='${res.destino === 'avaliacao_final' ? '/avaliacao-final.html' : '/dashboard.html'}'">
+      ${res.destino === 'avaliacao_final' ? 'Ir para Avaliação Final →' : 'Ir para o Dashboard →'}
+    </button>`;
+}
+
+function montarEnunciado(raw) {
+  let d = { tipo: 'texto', texto: raw };
+  try { d = JSON.parse(raw); } catch (e) {}
+  const t = d.texto ? `<div>${d.texto}</div>` : '';
+  if (d.tipo === 'codigo' && d.codigo) {
+    return `${t}<pre>${escHtml(d.codigo)}</pre>`;
+  }
+  return t || raw;
+}
+
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escAttr(s) { return String(s).replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+
+iniciar();
+</script>
+<script src="/js/mascote.js" defer></script>
+</body>
+</html>

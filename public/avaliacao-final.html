@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <meta name="description" content="Typeoff: avaliação final do curso de lógica de programação comparativa.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typeoff: Avaliação Final</title>
+  <script src="/js/tema.js" data-escala-apenas></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mascote.css">
+  <style>
+    .av-wrapper{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;background:var(--azul-escuro);}
+    .av-card{background:var(--offwhite);border-radius:12px;width:100%;max-width:700px;box-shadow:0 20px 60px rgba(0,0,0,.4);overflow:hidden;}
+    .av-header{background:linear-gradient(135deg,var(--azul-escuro),var(--azul-medio));padding:1.75rem 2rem;border-bottom:3px solid var(--dourado);}
+    .av-header h1{font-family:var(--fonte-codigo);font-size:1.2rem;color:var(--offwhite);font-weight:700;margin-bottom:.35rem;}
+    .av-header p{font-family:var(--fonte-codigo);font-size:.78rem;color:rgba(242, 237, 228, 0.86);}
+    .av-prog{height:4px;background:rgba(242,237,228,.15);}
+    .av-prog-fill{height:100%;background:var(--dourado);transition:width .5s ease;}
+    .av-body{padding:2rem;}
+    .locked-box{text-align:center;padding:3rem 2rem;}
+    .locked-icon{font-size:3rem;opacity:.4;margin-bottom:1rem;}
+    .locked-title{font-family:var(--fonte-codigo);font-size:1.1rem;font-weight:700;color:var(--titulo);margin-bottom:.75rem;}
+    .locked-text{font-family:var(--fonte-texto);font-size:.88rem;color:var(--cinza-medio);line-height:1.75;}
+    .q-texto{font-family:var(--fonte-codigo);font-size:.93rem;font-weight:500;color:var(--titulo);line-height:1.6;padding:1.25rem;background:rgba(27,42,107,.04);border-radius:var(--raio);border-left:4px solid var(--dourado);margin-bottom:1.25rem;}
+    .q-texto pre{background:var(--azul-escuro);color:var(--offwhite);padding:.875rem 1rem;border-radius:6px;font-size:.8rem;line-height:1.6;overflow-x:auto;margin-top:.75rem;}
+    .q-opcoes{display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.25rem;}
+    .q-opcao{display:flex;align-items:flex-start;gap:.75rem;padding:.7rem 1rem;border:1.5px solid var(--cinza-claro);border-radius:var(--raio);cursor:pointer;font-family:var(--fonte-codigo);font-size:.84rem;background:var(--superficie);text-align:left;width:100%;transition:var(--transicao);}
+    .q-opcao:hover:not(:disabled){border-color:var(--dourado);background:rgba(201,169,110,.06);}
+    .q-opcao.sel{border-color:var(--dourado);background:rgba(201,169,110,.1);}
+    .q-opcao.certa{border-color:var(--sucesso);background:rgba(39,174,96,.08);color:var(--sucesso-texto);}
+    .q-opcao.errada{border-color:var(--erro);background:rgba(192,57,43,.08);color:var(--erro);}
+    .q-letra{font-size:.7rem;color:var(--cinza-medio);min-width:18px;font-weight:700;flex-shrink:0;}
+    .fb-box{padding:.875rem 1rem;border-radius:var(--raio);font-family:var(--fonte-codigo);font-size:.82rem;border-left:4px solid;line-height:1.6;margin-bottom:.75rem;}
+    .fb-ok{background:rgba(39,174,96,.08);border-color:var(--sucesso);color:var(--fb-ok);}
+    .fb-err{background:rgba(192,57,43,.08);border-color:var(--erro);color:var(--fb-err);}
+    .q-num{font-family:var(--fonte-codigo);font-size:.72rem;color:var(--cinza-medio);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;justify-content:space-between;}
+    .q-unid-tag{background:rgba(201,169,110,.18);color:var(--fb-info);font-size:.68rem;padding:2px 8px;border-radius:20px;}
+    .res-score{font-family:var(--fonte-codigo);font-size:4.5rem;font-weight:700;text-align:center;line-height:1;margin-bottom:.5rem;}
+    .res-score.aprovado{color:var(--sucesso-texto);}
+    .res-score.reprovado{color:var(--erro);}
+    .res-sub{text-align:center;font-family:var(--fonte-codigo);font-size:.88rem;color:var(--cinza-medio);margin-bottom:1.5rem;}
+    .detalhe-item{display:flex;align-items:center;gap:.75rem;padding:.6rem 0;border-bottom:1px solid var(--cinza-claro);font-family:var(--fonte-codigo);font-size:.8rem;}
+    .detalhe-item:last-child{border-bottom:none;}
+    .det-ico{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0;}
+    .det-ok{background:rgba(39,174,96,.15);color:var(--sucesso-texto);}
+    .det-err{background:rgba(192,57,43,.15);color:var(--erro);}
+    .det-txt{flex:1;line-height:1.4;}
+    .det-correta{color:var(--cinza-medio);font-size:.75rem;}
+  </style>
+</head>
+<body>
+<main class="av-wrapper" id="conteudo-principal">
+  <div class="av-card">
+    <div class="av-header">
+      <h1>✦ Avaliação Final</h1>
+      <p id="av-sub">Verificação de aprendizagem, 10 questões</p>
+    </div>
+    <div class="av-prog"><div class="av-prog-fill" id="av-fill" style="width:0%"></div></div>
+    <div class="av-body" id="av-body">
+      <div style="text-align:center;padding:2rem;font-family:var(--fonte-codigo);color:var(--cinza-medio)">Carregando...</div>
+    </div>
+  </div>
+</main>
+<script src="/js/app.js"></script>
+<script>
+let questoes=[], respostas=[], indice=0, respondidas=new Set(), detalhes=[];
+const cron=criarCronometro();
+
+async function iniciar(){
+  const usuario = await verificarLogin('estudante');
+  if(!usuario)return;
+  const res=await fetch('/api/avaliacao-final').then(r=>r.json());
+  if(!res.sucesso){
+    mostrarBloqueado(res.erro||'Avaliação não disponível.');
+    return;
+  }
+  if(res.feita){
+    mostrarResultadoExistente(res.resultado);
+    return;
+  }
+  if(!res.questoes||!res.questoes.length){
+    mostrarBloqueado('As questões da avaliação final ainda não foram cadastradas pelo professor.');
+    return;
+  }
+  questoes=res.questoes;
+  respostas=new Array(questoes.length).fill(null);
+  mostrarIntro();
+}
+
+function mostrarBloqueado(msg){
+  document.getElementById('av-body').innerHTML=`
+    <div class="locked-box">
+      <div class="locked-icon">🔒</div>
+      <div class="locked-title">Avaliação não disponível</div>
+      <div class="locked-text">${msg}</div>
+      <a href="/dashboard.html" class="btn btn-primary mt-3" style="display:inline-flex">Voltar ao Dashboard</a>
+    </div>`;
+}
+
+function mostrarIntro(){
+  document.getElementById('av-body').innerHTML=`
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <div style="font-size:2.5rem;margin-bottom:.75rem">📝</div>
+      <div style="font-family:var(--fonte-codigo);font-size:1.15rem;font-weight:700;color:var(--titulo);margin-bottom:.5rem">Avaliação Final do Curso</div>
+      <p style="font-family:var(--fonte-texto);font-size:.88rem;color:var(--cinza-medio);line-height:1.75;max-width:480px;margin:0 auto">
+        Esta avaliação contém 10 questões de nível avançado cobrindo todas as 5 unidades do curso.<br>
+        Você precisa obter <strong>80% ou mais</strong> para emitir seu certificado.
+      </p>
+    </div>
+    <div style="background:rgba(201,169,110,.1);border-radius:var(--raio);border-left:3px solid var(--dourado);padding:1rem 1.25rem;margin-bottom:1.5rem">
+      <div style="font-family:var(--fonte-codigo);font-size:.78rem;color:var(--fb-info);line-height:1.6">
+        ✦ 10 questões · 2 por unidade<br>
+        ✦ Meta mínima: 80% (8 acertos)<br>
+        ✦ A avaliação só pode ser feita uma vez
+      </div>
+    </div>
+    <button class="btn btn-gold w-full" style="font-size:.9rem;padding:.8rem" onclick="comecar()">
+      → Iniciar avaliação final
+    </button>`;
+}
+
+function comecar(){ indice=0; cron.iniciar(); mostrarQuestao(); }
+
+function mostrarQuestao(){
+  if(indice>=questoes.length){submeter();return;}
+  const q=questoes[indice];
+  cron.marcar();
+  const pct=Math.round((indice/questoes.length)*100);
+  document.getElementById('av-fill').style.width=pct+'%';
+  document.getElementById('av-sub').textContent=`Questão ${indice+1} de ${questoes.length}`;
+  const unNomes={1:'Lógica',2:'Variáveis',3:'Condicionais',4:'Repetição',5:'Linguagens'};
+  const tag=q.unidade_id?`<span class="q-unid-tag">U${q.unidade_id}, ${unNomes[q.unidade_id]||''}</span>`:'';
+  let opHtml='';
+  if(q.tipo==='multipla_escolha'&&q.opcoes){
+    opHtml=q.opcoes.map((op,i)=>`
+      <button class="q-opcao" id="aop-${i}" onclick="selecionar('${escAttr(op)}',${i})">
+        <span class="q-letra">${String.fromCharCode(65+i)}.</span><span>${op}</span>
+      </button>`).join('');
+  }else{
+    opHtml=`
+      <button class="q-opcao" id="aop-0" onclick="selecionar('verdadeiro',0)"><span class="q-letra">V.</span><span>Verdadeiro</span></button>
+      <button class="q-opcao" id="aop-1" onclick="selecionar('falso',1)"><span class="q-letra">F.</span><span>Falso</span></button>`;
+  }
+  document.getElementById('av-body').innerHTML=`
+    <div class="q-num"><span>Questão ${indice+1} / ${questoes.length}</span>${tag}</div>
+    <div class="progress-bar-wrap mb-2"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+    <div class="q-texto">${montarEnunciado(q.enunciado)}</div>
+    <div class="q-opcoes">${opHtml}</div>
+    <div id="av-fb"></div>
+    <div id="av-next" class="hidden mt-2">
+      <button class="btn btn-primary w-full" onclick="avancar()">
+        ${indice+1<questoes.length?'Próxima →':'Ver resultado →'}
+      </button>
+    </div>`;
+}
+
+function selecionar(val,idx){
+  if(respondidas.has(indice))return;
+  respondidas.add(indice);
+  respostas[indice]={exercicio_id:questoes[indice].id,resposta_dada:val,tempo_ms:Math.round(cron.marcar())};
+  document.querySelectorAll('.q-opcao').forEach(b=>b.disabled=true);
+  const q=questoes[indice];
+  const ok=val.trim().toLowerCase()===q.resposta_correta.trim().toLowerCase();
+  document.querySelectorAll('.q-opcao').forEach(btn=>{
+    const txt=btn.textContent.replace(/^[A-ZVF]\.\s*/,'').trim();
+    if(txt.toLowerCase()===q.resposta_correta.toLowerCase())btn.classList.add('certa');
+    else if(!ok&&txt.toLowerCase()===val.toLowerCase())btn.classList.add('errada');
+  });
+  document.getElementById('av-fb').innerHTML=`
+    <div class="fb-box ${ok?'fb-ok':'fb-err'}">
+      <strong>${ok?'✓ Correto!':'✗ Incorreto.'}</strong>
+      ${q.explicacao?`<br>${q.explicacao}`:''}
+      ${!ok?`<br>Resposta correta: <strong>${q.resposta_correta}</strong>`:''}
+    </div>`;
+  document.getElementById('av-next').classList.remove('hidden');
+}
+
+function avancar(){indice++;respondidas.delete(indice);mostrarQuestao();}
+
+async function submeter(){
+  const tempoTotal=Math.round(cron.parar());
+  document.getElementById('av-fill').style.width='100%';
+  document.getElementById('av-sub').textContent='Calculando resultado...';
+  document.getElementById('av-body').innerHTML=`<div style="text-align:center;padding:3rem;font-family:var(--fonte-codigo);color:var(--cinza-medio)">Processando...</div>`;
+  const res=await fetch('/api/avaliacao-final/submeter',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({respostas:respostas.filter(Boolean),tempo_total_ms:tempoTotal})
+  }).then(r=>r.json());
+  if(res&&res.tempo_ms==null)res.tempo_ms=tempoTotal;
+  mostrarResultado(res);
+}
+
+function mostrarResultado(res){
+  const apr=res.aprovado||res.percentual>=80;
+  document.getElementById('av-sub').textContent='Resultado final';
+  const detHtml=(res.detalhes||[]).map(d=>`
+    <div class="detalhe-item">
+      <div class="det-ico ${d.correta?'det-ok':'det-err'}">${d.correta?'✓':'✗'}</div>
+      <div class="det-txt">
+        <div>${d.correta?'Correto':'Incorreto'}</div>
+        ${!d.correta?`<div class="det-correta">Correta: ${d.resposta_correta}</div>`:''}
+      </div>
+    </div>`).join('');
+  document.getElementById('av-body').innerHTML=`
+    <div class="res-score ${apr?'aprovado':'reprovado'}">${res.percentual}%</div>
+    <div class="res-sub">${res.acertos} de ${res.total} questões corretas${res.tempo_ms!=null?` · tempo: ${formatarDuracao(res.tempo_ms)}`:''}</div>
+    <p style="font-family:var(--fonte-codigo);font-size:.95rem;font-weight:700;text-align:center;color:${apr?'var(--sucesso-texto)':'var(--erro-texto)'};margin-bottom:1.5rem">
+      ${apr?'✓ Aprovado! Você atingiu a meta (≥ 80%).':'✗ Não aprovado. Mínimo exigido: 80%.'}
+    </p>
+    ${apr ? `
+      <button class="btn btn-gold w-full mb-2" style="font-size:.9rem;padding:.85rem"
+        onclick="window.location.href='/certificado.html'">✦ Emitir meu certificado</button>
+      <button class="btn btn-secondary w-full mb-2" onclick="window.location.href='/dashboard.html'">Voltar ao Dashboard</button>
+    ` : `
+      <div style="background:rgba(192,57,43,.06);border:1px solid rgba(192,57,43,.2);border-radius:var(--raio);padding:1rem 1.25rem;margin-bottom:1.25rem;font-family:var(--fonte-codigo);font-size:.83rem;color:var(--fb-err);line-height:1.65">
+        <strong>Resultado insuficiente.</strong> Você precisa de pelo menos 80% para obter o certificado.<br>
+        Revise os conteúdos das unidades antes de tentar novamente.
+      </div>
+      <a href="/dashboard.html" class="btn btn-primary w-full mb-2" style="display:flex;justify-content:center;text-decoration:none;font-size:.88rem;padding:.8rem">
+        Revisar conteúdo das unidades →
+      </a>
+      <button class="btn btn-secondary w-full mb-2" onclick="window.location.href='/dashboard.html'">Voltar ao Dashboard</button>
+    `}
+    ${detHtml?`<div style="border-top:1px solid var(--cinza-claro);padding-top:1rem;margin-top:.5rem">
+      <div style="font-family:var(--fonte-codigo);font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--cinza-medio);margin-bottom:.75rem">Detalhamento</div>
+      ${detHtml}</div>`:''}`;
+}
+
+function mostrarResultadoExistente(r){
+  const apr=r.aprovado===1||r.aprovado===true;
+  document.getElementById('av-sub').textContent='Avaliação já realizada';
+  document.getElementById('av-body').innerHTML=`
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <div class="res-score ${apr?'aprovado':'reprovado'}" style="font-size:3rem">${r.percentual}%</div>
+      <div class="res-sub">${r.acertos} de ${r.total} corretas${r.tempo_ms!=null?` · tempo: ${formatarDuracao(r.tempo_ms)}`:''}</div>
+      <p style="font-family:var(--fonte-codigo);font-size:.88rem;color:${apr?'var(--sucesso-texto)':'var(--erro-texto)'};font-weight:700">
+        ${apr?'✓ Aprovado':'✗ Não aprovado'}
+      </p>
+    </div>
+    ${apr ? `
+      <button class="btn btn-gold w-full mb-2" onclick="window.location.href='/certificado.html'">✦ Ver meu certificado</button>
+      <button class="btn btn-secondary w-full" onclick="window.location.href='/dashboard.html'">Voltar ao Dashboard</button>
+    ` : `
+      <a href="/dashboard.html" class="btn btn-primary w-full mb-2" style="display:flex;justify-content:center;text-decoration:none">
+        Revisar conteúdo das unidades →
+      </a>
+      <button class="btn btn-secondary w-full" onclick="window.location.href='/dashboard.html'">Voltar ao Dashboard</button>
+    `}`;
+}
+
+function montarEnunciado(raw){
+  let d={tipo:'texto',texto:raw};try{d=JSON.parse(raw);}catch(e){}
+  const t=d.texto?`<div>${d.texto}</div>`:'';
+  if(d.tipo==='codigo'&&d.codigo)return`${t}<pre>${escHtml(d.codigo)}</pre>`;
+  return t||raw;
+}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function escAttr(s){return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;');}
+
+iniciar();
+</script>
+<script src="/js/mascote.js" defer></script>
+</body>
+</html>

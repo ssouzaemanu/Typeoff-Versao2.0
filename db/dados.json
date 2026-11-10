@@ -1,0 +1,1081 @@
+{
+ "usuarios": [
+  {
+   "id": 1,
+   "nome": "Prof Teste",
+   "email": "prof@test.com",
+   "senha": "123",
+   "tipo": "professor",
+   "criado_em": "2026-04-21T21:19:31.861Z"
+  },
+  {
+   "id": 2,
+   "nome": "Aluno Test",
+   "email": "aluno@test.com",
+   "senha": "123",
+   "tipo": "estudante",
+   "criado_em": "2026-04-21T21:20:32.264Z"
+  },
+  {
+   "id": 3,
+   "nome": "Teste",
+   "email": "t@t.com",
+   "senha": "123",
+   "tipo": "estudante",
+   "diagnostico_feito": 0,
+   "criado_em": "2026-04-22T12:04:32.271Z"
+  },
+  {
+   "id": 4,
+   "nome": "Ana",
+   "email": "ana@test.com",
+   "senha": "123",
+   "tipo": "estudante",
+   "diagnostico_feito": 0,
+   "criado_em": "2026-04-22T17:43:01.483Z"
+  }
+ ],
+ "conteudos": [
+  {
+   "id": 1,
+   "unidade_id": 1,
+   "titulo": "O que é um Algoritmo?",
+   "corpo": "<p>Um algoritmo é uma <strong>sequência finita, ordenada e não ambígua</strong> de passos para solucionar um problema ou realizar uma tarefa.</p>\n<div class=\"destaque-info\"><strong>Conceito central:</strong> um algoritmo não depende de nenhuma linguagem de programação. Ele pode ser expresso em pseudocódigo, fluxograma ou linguagem natural, e ainda assim ser implementado em C, Java ou Python.</div>\n<p>A palavra \"algoritmo\" vem do nome do matemático persa Mohammed ibn Musa Al-Khowarizmi, que viveu por volta de 800 d.C. e cujos trabalhos introduziram o cálculo hindu na Europa.</p>\n<p>Algoritmos não existem apenas na computação, você já criou vários hoje: a ordem de escovar os dentes, a receita de um bolo, as instruções de um manual. O que muda na computação é que os passos precisam ser precisos o suficiente para que um computador, que não tem julgamento próprio, possa executá-los corretamente.</p>\n<p><strong>Todo algoritmo computacional precisa ter:</strong></p>\n<ul>\n<li><strong>Definição:</strong> cada passo deve ser claro, sem dupla interpretação</li>\n<li><strong>Finitude:</strong> deve terminar após um número finito de passos</li>\n<li><strong>Efetividade:</strong> as operações precisam ser simples o suficiente para serem executadas exatamente</li>\n<li><strong>Entradas:</strong> zero ou mais dados que o algoritmo recebe para processar</li>\n<li><strong>Saídas:</strong> um ou mais resultados produzidos ao final</li>\n</ul>\n<p><strong>Exemplo, Algoritmo para fritar um ovo:</strong></p>\n<pre>1. Retire o ovo da geladeira\n2. Coloque a frigideira no fogo\n3. Coloque óleo na frigideira\n4. Quebre o ovo, separando a casca\n5. Ponha a clara e a gema na frigideira\n6. Espere um minuto\n7. Apague o fogo\n8. Retire o ovo da frigideira</pre>\n<p>Perceba: os passos são claros (definição), têm início e fim (finitude), e cada um é uma ação simples e executável (efetividade).</p>",
+   "tipo": "texto",
+   "ordem": 1,
+   "criado_em": "2026-04-22T12:04:22.559Z"
+  },
+  {
+   "id": 2,
+   "unidade_id": 1,
+   "titulo": "Como Representar Algoritmos?",
+   "corpo": "<p>Existem três formas principais de representar um algoritmo. Cada uma tem vantagens e desvantagens.</p>\n<p><strong>1. Descrição Narrativa</strong><br>\nUsa linguagem natural (português, inglês etc.). É a mais fácil de criar, mas a mais sujeita a ambiguidades.<br>\n✓ Vantagem: qualquer pessoa entende. ✗ Desvantagem: difícil de traduzir diretamente para código.</p>\n<p><strong>2. Fluxograma</strong><br>\nUsa formas geométricas padronizadas internacionalmente:</p>\n<ul>\n<li><strong>Oval/Elipse</strong> → Início e Fim</li>\n<li><strong>Retângulo</strong> → Processamento (cálculo, atribuição)</li>\n<li><strong>Paralelogramo</strong> → Entrada ou Saída de dados</li>\n<li><strong>Losango</strong> → Decisão (ponto de escolha: sim/não)</li>\n<li><strong>Seta</strong> → Direção do fluxo</li>\n</ul>\n<p>✓ Vantagem: visual, padrão mundial. ✗ Desvantagem: fica grande para algoritmos complexos.</p>\n<p><strong>3. Pseudocódigo (Linguagem Algorítmica)</strong><br>\nLinguagem \"do meio do caminho\", mais rigorosa que o português, mais flexível que uma linguagem de programação. Usa palavras como: ALGORITMO, DECLARE, LEIA, ESCREVA, SE/ENTÃO/SENÃO, ENQUANTO, PARA.</p>\n<p>✓ Vantagem: muito próxima das linguagens de programação reais. ✗ Desvantagem: menos expressiva que a narrativa.</p>\n<p><strong>Exemplo em pseudocódigo, Calcular média:</strong></p>\n<pre>ALGORITMO\n  DECLARE nota1, nota2, M : NUMÉRICO\n  LEIA nota1\n  LEIA nota2\n  M &lt;- (nota1 + nota2) / 2\n  SE M &gt;= 7.0 ENTÃO\n    ESCREVA \"Aprovado\"\n  SENÃO\n    ESCREVA \"Reprovado\"\n  FIM-SE\nFIM_ALGORITMO</pre>\n<p>Este mesmo algoritmo, quando traduzido para C, Java ou Python, manterá a mesma lógica, apenas a sintaxe muda.</p>",
+   "tipo": "texto",
+   "ordem": 2,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 3,
+   "unidade_id": 1,
+   "titulo": "Como o Computador Executa um Algoritmo?",
+   "corpo": "<p>Para entender como um algoritmo vira um programa, precisamos entender dois conceitos: a <strong>arquitetura de Von Neumann</strong> e os <strong>tradutores</strong>.</p>\n<p><strong>Arquitetura de Von Neumann</strong><br>\nTodos os computadores modernos seguem um modelo proposto por John Von Neumann: instruções e dados ficam juntos na memória. O processador executa um ciclo contínuo:</p>\n<pre>1. Buscar instrução na memória\n2. Decodificar a instrução\n3. Executar a instrução\n4. Voltar ao passo 1</pre>\n<p>Este ciclo explica por que algoritmos funcionam: o computador executa os passos um de cada vez, na ordem em que aparecem.</p>\n<p><strong>Compiladores e Interpretadores</strong></p>\n<ul>\n<li><strong>Compilador:</strong> traduz todo o programa de uma vez para código de máquina antes de executar. C usa compilador, mais rápido na execução.</li>\n<li><strong>Interpretador:</strong> traduz e executa instrução por instrução. Python usa interpretador, mais flexível para desenvolvimento.</li>\n<li><strong>Java</strong> usa abordagem híbrida: compila para bytecode, interpretado pela JVM. Por isso Java é portável: \"escreva uma vez, execute em qualquer lugar\".</li>\n</ul>\n<p><strong>Paradigmas de Programação</strong></p>\n<ul>\n<li><strong>Imperativo/Estruturado:</strong> descreve o passo a passo (C, Java, Python)</li>\n<li><strong>Orientado a Objetos:</strong> modela o problema como objetos (Java, Python)</li>\n<li><strong>Declarativo:</strong> descreve o que você quer, não como obter (SQL, HTML)</li>\n</ul>\n<p>Neste curso usaremos o paradigma estruturado, que trabalha com três tipos: <strong>sequencial</strong>, <strong>condicional</strong> e <strong>de repetição</strong>.</p>",
+   "tipo": "texto",
+   "ordem": 3,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 4,
+   "unidade_id": 1,
+   "titulo": "Comparação, Algoritmo de Média com Classificação",
+   "corpo": "{\"python\":\"# Calcula média de duas notas e classifica o aluno\\n# Python: sem declaração de tipo, usa input() para ler dados\\nnota1 = float(input('Digite a nota 1: '))\\nnota2 = float(input('Digite a nota 2: '))\\nmedia = (nota1 + nota2) / 2\\nif media >= 7.0:\\n    print('Aprovado! Média:', media)\\nelse:\\n    print('Reprovado. Média:', media)\",\"java\":\"// Calcula média de duas notas e classifica o aluno\\n// Java: tipos obrigatórios, tudo dentro de uma classe\\nimport java.util.Scanner;\\npublic class MediaAluno {\\n    public static void main(String[] args) {\\n        Scanner sc = new Scanner(System.in);\\n        double nota1 = sc.nextDouble();\\n        double nota2 = sc.nextDouble();\\n        double media = (nota1 + nota2) / 2;\\n        if (media >= 7.0) {\\n            System.out.printf(\\\"Aprovado! Media: %.2f%n\\\", media);\\n        } else {\\n            System.out.printf(\\\"Reprovado. Media: %.2f%n\\\", media);\\n        }\\n    }\\n}\",\"c\":\"// Calcula média de duas notas e classifica o aluno\\n// C: tipos obrigatórios, scanf/printf para I/O\\n#include <stdio.h>\\nint main() {\\n    float nota1, nota2, media;\\n    scanf(\\\"%f\\\", &nota1);\\n    scanf(\\\"%f\\\", &nota2);\\n    media = (nota1 + nota2) / 2;\\n    if (media >= 7.0) {\\n        printf(\\\"Aprovado! Media: %.2f\\\\n\\\", media);\\n    } else {\\n        printf(\\\"Reprovado. Media: %.2f\\\\n\\\", media);\\n    }\\n    return 0;\\n}\",\"observacoes\":\"<strong>O que observar:</strong> Python não exige declaração de tipo. Java requer que todo código esteja dentro de uma classe. C usa #include para acessar printf/scanf. A lógica é idêntica nas três: ler notas → calcular média → comparar → exibir resultado.\"}",
+   "tipo": "comparacao",
+   "ordem": 4,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 5,
+   "unidade_id": 2,
+   "titulo": "O que é uma Variável?",
+   "corpo": "<p>Imagine a memória do computador como um grande <strong>armário cheio de gavetas</strong>. Cada gaveta tem um número (endereço) e pode guardar um valor. Uma variável é justamente o apelido que damos a uma dessas gavetas para identificá-la de forma amigável.</p>\n<p>Se declaramos <code>int idade = 18;</code>, estamos dizendo: \"reserve uma gaveta, chame-a de <code>idade</code>, e coloque o valor 18 nela\".</p>\n<p><strong>Três coisas que definem uma variável:</strong></p>\n<ol><li><strong>Nome (identificador):</strong> como chamamos a variável no código</li>\n<li><strong>Tipo:</strong> que tipo de dado ela armazena (inteiro, decimal, caractere…)</li>\n<li><strong>Valor:</strong> o conteúdo atual armazenado</li></ol>\n<p><strong>Regras para nomear variáveis em C:</strong></p>\n<ul>\n<li>Pode usar letras, números e sublinha (<code>_</code>)</li>\n<li>Deve começar com letra ou sublinha, nunca com número</li>\n<li>Não pode ter espaços nem caracteres especiais (ç, ã, etc.)</li>\n<li>Não pode ser uma palavra reservada (<code>if</code>, <code>while</code>, <code>int</code>…)</li>\n<li>C diferencia maiúsculas: <code>nota</code> e <code>Nota</code> são variáveis diferentes!</li>\n</ul>\n<p>✅ Válidos: <code>nota1</code>, <code>media_final</code>, <code>nomeAluno</code>, <code>_total</code><br>\n❌ Inválidos: <code>3notas</code>, <code>nota final</code>, <code>if</code>, <code>COMPUTAÇÃO</code></p>",
+   "tipo": "texto",
+   "ordem": 1,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 6,
+   "unidade_id": 2,
+   "titulo": "Tipos de Dados",
+   "corpo": "<p>Cada variável precisa de um tipo, pois tipos diferentes ocupam quantidades diferentes de memória. Em C, os tipos primitivos são:</p>\n<pre>int   , 4 bytes, Números inteiros         ex: int idade = 20;\nfloat , 4 bytes, Decimais (simples)       ex: float altura = 1.75f;\ndouble, 8 bytes, Decimais (maior precisão) ex: double pi = 3.14159;\nchar  , 1 byte , Um caractere             ex: char letra = 'A';</pre>\n</p><div class=\"destaque-info\"><strong>Curiosidade sobre char:</strong> O tipo <code>char</code> armazena um caractere usando a tabela ASCII, uma correspondência entre letras e números. A letra <code>'A'</code> corresponde ao número 65. Por isso em C você pode usar <code>char</code> tanto para letras quanto para inteiros pequenos.</p>\n<p><strong>Diferenças entre as linguagens:</strong></p>\n<ul>\n<li><strong>Python:</strong> tipagem dinâmica, <code>x = 10</code> cria um inteiro automaticamente</li>\n<li><strong>Java:</strong> tipagem estática, obrigatório declarar: <code>int x = 10;</code></li>\n<li><strong>C:</strong> tipagem estática, obrigatório declarar: <code>int x = 10;</code></li>\n</ul>\n<p><strong>Divisão de inteiros, atenção!</strong><br>\nEm C e Java, dividir dois inteiros produz um resultado inteiro, a parte decimal é descartada! <code>10 / 3 = 3</code>, não 3.33. Para obter decimal, ao menos um operando deve ser float: <code>10.0 / 3 = 3.33</code>.</p>",
+   "tipo": "texto",
+   "ordem": 2,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 7,
+   "unidade_id": 2,
+   "titulo": "Operações com Variáveis",
+   "corpo": "<p>Com variáveis declaradas, podemos realizar operações. Os <strong>operadores aritméticos</strong> em C:</p>\n<div class=\"destaque-atencao\"><strong>Atenção, divisão entre inteiros:</strong> em C e Java, dividir dois inteiros descarta a parte decimal. <code>10 / 3 = 3</code>, não 3.33. Para obter o resultado fracionário, ao menos um dos operandos deve ser float: <code>10.0 / 3 = 3.33</code>.</div>\n<pre>+  → Adição:        5 + 3 = 8\n-  → Subtração:     10 - 4 = 6\n*  → Multiplicação: 6 * 7 = 42\n/  → Divisão:       10 / 3 = 3  (inteiros!)\n%  → Resto:         10 % 3 = 1</pre>\n<p><strong>Precedência</strong> segue a matemática: multiplicação e divisão antes de adição e subtração. Use parênteses para mudar a ordem:</p>\n<pre>int r1 = 2 + 3 * 4;     // r1 = 14 (multiplicação primeiro)\nint r2 = (2 + 3) * 4;   // r2 = 20 (parênteses primeiro)</pre>\n<p><strong>Incremento e decremento:</strong></p>\n<pre>x++;   // equivale a x = x + 1 (incrementa depois de usar)\n++x;   // incrementa antes de usar\nx--;   // equivale a x = x - 1</pre>\n<p><strong>Constantes simbólicas</strong>, para valores que nunca mudam, use:</p>\n<pre>#define PI 3.14159\n#define ACELERACAO_GRAVIDADE 9.8</pre>\n<p>Assim, se o valor precisar mudar, você altera em apenas um lugar.</p>",
+   "tipo": "texto",
+   "ordem": 3,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 8,
+   "unidade_id": 2,
+   "titulo": "Comparação, Cálculo de IMC",
+   "corpo": "{\"python\":\"# Variáveis em Python, sem declaração de tipo\\nnome = input('Seu nome: ')\\npeso = float(input('Peso (kg): '))\\naltura = float(input('Altura (m): '))\\nimc = peso / (altura ** 2)   # ** é potência em Python\\nprint(f'{nome}, seu IMC é: {imc:.2f}')\\nif imc < 18.5:\\n    print('Abaixo do peso')\\nelif imc < 25.0:\\n    print('Peso normal')\\nelse:\\n    print('Acima do peso')\",\"java\":\"// Variáveis em Java, tipos obrigatórios\\nimport java.util.Scanner;\\npublic class IMC {\\n    public static void main(String[] args) {\\n        Scanner sc = new Scanner(System.in);\\n        String nome = sc.nextLine();\\n        double peso = sc.nextDouble();\\n        double altura = sc.nextDouble();\\n        double imc = peso / Math.pow(altura, 2);\\n        System.out.printf(\\\"%s, seu IMC: %.2f%n\\\", nome, imc);\\n        if (imc < 18.5)\\n            System.out.println(\\\"Abaixo do peso\\\");\\n        else if (imc < 25.0)\\n            System.out.println(\\\"Peso normal\\\");\\n        else\\n            System.out.println(\\\"Acima do peso\\\");\\n    }\\n}\",\"c\":\"// Variáveis em C, declaração explícita obrigatória\\n#include <stdio.h>\\nint main() {\\n    char nome[50];\\n    float peso, altura, imc;\\n    scanf(\\\"%s\\\", nome);\\n    scanf(\\\"%f\\\", &peso);\\n    scanf(\\\"%f\\\", &altura);\\n    imc = peso / (altura * altura);\\n    printf(\\\"%s, seu IMC: %.2f\\\\n\\\", nome, imc);\\n    if (imc < 18.5)\\n        printf(\\\"Abaixo do peso\\\\n\\\");\\n    else if (imc < 25.0)\\n        printf(\\\"Peso normal\\\\n\\\");\\n    else\\n        printf(\\\"Acima do peso\\\\n\\\");\\n    return 0;\\n}\",\"observacoes\":\"<strong>Potência:</strong> Python usa <code>**</code>, Java usa <code>Math.pow()</code>, C usa multiplicação direta.<br><strong>Texto:</strong> Python usa <code>str</code>, Java usa <code>String</code>, C usa array de <code>char</code> com tamanho fixo.<br><strong>Formatação:</strong> Python usa f-strings (<code>f'{var:.2f}'</code>), Java e C usam <code>%.2f</code>.\"}",
+   "tipo": "comparacao",
+   "ordem": 4,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 9,
+   "unidade_id": 3,
+   "titulo": "Tomando Decisões no Código",
+   "corpo": "<p>Na vida real, tomamos decisões o tempo todo: \"Se chover, vou de guarda-chuva. Senão, vou sem.\" Em programação, usamos as <strong>estruturas condicionais</strong> para que o programa tome decisões com base em condições.</p>\n<div class=\"destaque-atencao\"><strong>Atenção, erro muito comum:</strong> confundir <code>=</code> (atribuição) com <code>==</code> (comparação). Usar <code>=</code> dentro de um <code>if</code> é um bug silencioso: o código compila, mas se comporta de forma errada.</div>\n<p><strong>Os três tipos de decisão:</strong></p>\n<ol>\n<li><strong>Decisão simples (if):</strong> executa um bloco só se a condição for verdadeira</li>\n<li><strong>Decisão composta (if/else):</strong> executa um bloco se verdadeiro, outro se falso</li>\n<li><strong>Decisão múltipla (if/else if/else ou switch):</strong> testa múltiplas condições</li>\n</ol>\n<p><strong>Sintaxe em C:</strong></p>\n<pre>// Decisão simples\nif (condição) {\n    // executa só se verdadeira\n}\n\n// Decisão composta\nif (condição) {\n    // executa se verdadeira\n} else {\n    // executa se falsa\n}\n\n// Decisão múltipla\nif (condição1) {\n    ...\n} else if (condição2) {\n    ...\n} else {\n    // nenhuma das anteriores\n}</pre>\n</p><div class=\"destaque-atencao\"><strong>Atenção, Erro mais comum:</strong> confundir <code>=</code> (atribuição) com <code>==</code> (comparação).</p>\n<pre>x = 5;    // ATRIBUIÇÃO: guarda 5 em x\nx == 5;   // COMPARAÇÃO: verifica se x é igual a 5</pre>\n<p>Usar <code>=</code> dentro de um <code>if</code> no lugar de <code>==</code> é um bug silencioso, compila mas se comporta errado!</p>",
+   "tipo": "texto",
+   "ordem": 1,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 10,
+   "unidade_id": 3,
+   "titulo": "Operadores Relacionais e Lógicos",
+   "corpo": "<p><strong>Operadores relacionais</strong>, comparam dois valores:</p>\n<pre>&gt;   → Maior que         ex: x &gt; 10\n&lt;   → Menor que         ex: y &lt; 0\n&gt;=  → Maior ou igual    ex: nota &gt;= 7\n&lt;=  → Menor ou igual    ex: idade &lt;= 18\n==  → Igual a           ex: opcao == 1\n!=  → Diferente de      ex: senha != 0</pre>\n<p><strong>Operadores lógicos</strong>, combinam condições:</p>\n<pre>&amp;&amp;  → E (AND)  , verdadeiro se AMBAS forem verdadeiras\n||  → OU (OR)  , verdadeiro se PELO MENOS UMA for verdadeira\n!   → NÃO (NOT), inverte: verdadeiro vira falso</pre>\n<p><strong>Tabela-verdade resumida:</strong></p>\n<pre>true  &amp;&amp; true  = true\ntrue  &amp;&amp; false = false\nfalse &amp;&amp; false = false\n\ntrue  || false = true\nfalse || false = false\n\n!true  = false\n!false = true</pre>\n<p><strong>Exemplo prático, verificar nota válida:</strong></p>\n<pre>float nota;\nscanf(\"%f\", &amp;nota);\nif (nota &gt;= 0 &amp;&amp; nota &lt;= 10) {\n    if (nota &gt;= 7) {\n        printf(\"Aprovado\");\n    } else {\n        printf(\"Reprovado\");\n    }\n} else {\n    printf(\"Nota inválida\");\n}</pre>\n<p>Em Python, os operadores lógicos são por extenso: <code>and</code>, <code>or</code>, <code>not</code>. Em Java e C, são os símbolos: <code>&amp;&amp;</code>, <code>||</code>, <code>!</code>.</p>",
+   "tipo": "texto",
+   "ordem": 2,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 11,
+   "unidade_id": 3,
+   "titulo": "Decisão Múltipla com switch",
+   "corpo": "<p>Quando temos muitas possibilidades para um mesmo valor, o <code>switch</code> é mais legível que uma série de <code>if/else if</code>.</p>\n<pre>int dia;\nscanf(\"%d\", &amp;dia);\nswitch (dia) {\n    case 1:  printf(\"Domingo\");    break;\n    case 2:  printf(\"Segunda\");    break;\n    case 3:  printf(\"Terça\");      break;\n    case 4:  printf(\"Quarta\");     break;\n    case 5:  printf(\"Quinta\");     break;\n    case 6:  printf(\"Sexta\");      break;\n    case 7:  printf(\"Sábado\");     break;\n    default: printf(\"Dia inválido\");\n}</pre>\n<p><strong>Pontos importantes:</strong></p>\n<ul>\n<li><code>switch</code> só funciona com valores inteiros (<code>int</code>) ou caracteres (<code>char</code>)</li>\n<li>O <code>break</code> ao final de cada <code>case</code> é obrigatório, sem ele, a execução \"cai\" para o próximo case</li>\n<li><code>default</code> é opcional e captura qualquer valor não coberto pelos <code>case</code></li>\n</ul>\n<p><strong>Python não tem switch tradicional</strong>, usa <code>if/elif/else</code>. A partir do Python 3.10 foi introduzido <code>match/case</code>. Java tem <code>switch</code> com a mesma sintaxe do C.</p>",
+   "tipo": "texto",
+   "ordem": 3,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 12,
+   "unidade_id": 3,
+   "titulo": "Comparação, Classificação de Notas",
+   "corpo": "{\"python\":\"# Classificação de notas, Python\\n# elif é a contração de \\\"else if\\\" em Python\\nnota = float(input('Digite a nota (0 a 10): '))\\nif nota >= 9.0:\\n    conceito = 'A, Excelente'\\nelif nota >= 7.0:\\n    conceito = 'B, Bom'\\nelif nota >= 5.0:\\n    conceito = 'C, Regular'\\nelif nota >= 3.0:\\n    conceito = 'D, Insuficiente'\\nelse:\\n    conceito = 'F, Reprovado'\\nprint(f'Nota {nota:.1f} → Conceito: {conceito}')\",\"java\":\"// Classificação de notas, Java\\nimport java.util.Scanner;\\npublic class ClassificaNotas {\\n    public static void main(String[] args) {\\n        Scanner sc = new Scanner(System.in);\\n        double nota = sc.nextDouble();\\n        String conceito;\\n        if (nota >= 9.0) {\\n            conceito = \\\"A, Excelente\\\";\\n        } else if (nota >= 7.0) {\\n            conceito = \\\"B, Bom\\\";\\n        } else if (nota >= 5.0) {\\n            conceito = \\\"C, Regular\\\";\\n        } else if (nota >= 3.0) {\\n            conceito = \\\"D, Insuficiente\\\";\\n        } else {\\n            conceito = \\\"F, Reprovado\\\";\\n        }\\n        System.out.printf(\\\"Nota %.1f -> Conceito: %s%n\\\", nota, conceito);\\n    }\\n}\",\"c\":\"// Classificação de notas, C\\n#include <stdio.h>\\nint main() {\\n    float nota;\\n    scanf(\\\"%f\\\", &nota);\\n    if (nota >= 9.0)\\n        printf(\\\"A, Excelente\\\\n\\\");\\n    else if (nota >= 7.0)\\n        printf(\\\"B, Bom\\\\n\\\");\\n    else if (nota >= 5.0)\\n        printf(\\\"C, Regular\\\\n\\\");\\n    else if (nota >= 3.0)\\n        printf(\\\"D, Insuficiente\\\\n\\\");\\n    else\\n        printf(\\\"F, Reprovado\\\\n\\\");\\n    return 0;\\n}\",\"observacoes\":\"<strong>Python</strong> usa <code>elif</code> (uma palavra) em vez de <code>else if</code> (duas palavras). <strong>Java e C</strong> são idênticos na estrutura. A lógica de testar do maior para o menor é igual nas três linguagens.\"}",
+   "tipo": "comparacao",
+   "ordem": 4,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 13,
+   "unidade_id": 4,
+   "titulo": "Por que Repetir?, Introdução aos Laços",
+   "corpo": "<p>Imagine que você precisa imprimir \"Olá\" 1000 vezes. Escrever <code>printf(\"Olá\\n\");</code> mil vezes seria inviável. As <strong>estruturas de repetição</strong> (laços ou loops) permitem que um bloco de código seja executado várias vezes automaticamente.</p>\n<div class=\"destaque-atencao\"><strong>Atenção, laço infinito:</strong> sem a atualização da variável de controle dentro do laço, a condição nunca se torna falsa e o programa trava. Verifique sempre se a condição de parada será alcançada.</div>\n<p><strong>Toda estrutura de repetição tem:</strong></p>\n<ol>\n<li><strong>Condição de parada:</strong> o teste que define se o laço continua ou para</li>\n<li><strong>Corpo do laço:</strong> o bloco de código que é repetido</li>\n<li><strong>Atualização:</strong> algo que muda a cada iteração para que a condição eventualmente se torne falsa</li>\n</ol>\n</p><div class=\"destaque-atencao\"><strong>Atenção, Laço infinito, nunca faça sem intenção:</strong></p>\n<pre>int x = 0;\nwhile (x &lt; 10) {\n    printf(\"x = %d\\n\", x);\n    // Esqueceu o x++ aqui!!! O laço nunca para.\n}</pre>\n<p>Em C existem três comandos de repetição: <code>while</code>, <code>do-while</code> e <code>for</code>. Cada um tem uma situação em que se encaixa melhor.</p>",
+   "tipo": "texto",
+   "ordem": 1,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 14,
+   "unidade_id": 4,
+   "titulo": "Os Três Tipos de Laço",
+   "corpo": "<p><strong>1. while, \"enquanto\"</strong><br>\nVerifica a condição ANTES de executar o bloco. Se falsa desde o início, o bloco nunca executa.</p>\n<pre>int cont = 1;\nwhile (cont &lt;= 10) {\n    printf(\"%d\\n\", cont);\n    cont++;    // atualização obrigatória!\n}</pre>\n<p>Use <code>while</code> quando não sabe quantas vezes vai repetir.</p>\n\n<p><strong>2. do-while, \"faça...enquanto\"</strong><br>\nExecuta o bloco PRIMEIRO e só depois verifica. Garante pelo menos uma execução.</p>\n<pre>float nota;\ndo {\n    printf(\"Digite uma nota (0 a 10): \");\n    scanf(\"%f\", &amp;nota);\n} while (nota &lt; 0 || nota &gt; 10);</pre>\n<p>Use <code>do-while</code> quando o bloco precisa executar ao menos uma vez.</p>\n\n<p><strong>3. for, \"para\"</strong><br>\nO for é compacto, deixa visível o início, condição e incremento na mesma linha. Ideal quando sabe exatamente quantas vezes repetir.</p>\n<pre>// Estrutura: for (inicialização; condição; incremento)\nfor (int i = 1; i &lt;= 10; i++) {\n    printf(\"%d\\n\", i);\n}</pre>\n\n<p><strong>Regra prática:</strong></p>\n<ul>\n<li>Número de repetições conhecido → <code>for</code></li>\n<li>Número desconhecido, pode ser zero repetições → <code>while</code></li>\n<li>Número desconhecido, mínimo uma repetição → <code>do-while</code></li>\n</ul>",
+   "tipo": "texto",
+   "ordem": 2,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 15,
+   "unidade_id": 4,
+   "titulo": "break, continue e Padrões de Laço",
+   "corpo": "<p><strong>break</strong>, encerra o laço imediatamente, saindo dele por completo.</p>\n<pre>for (int i = 1; i &lt;= 100; i++) {\n    if (i == 7) {\n        printf(\"Encontrei o 7!\\n\");\n        break;  // sai do laço\n    }\n}</pre>\n\n<p><strong>continue</strong>, pula o restante da iteração atual e vai para a próxima.</p>\n<pre>// Imprime apenas os números ímpares de 1 a 20\nfor (int i = 1; i &lt;= 20; i++) {\n    if (i % 2 == 0) continue;  // pula os pares\n    printf(\"%d\\n\", i);\n}</pre>\n\n<p><strong>Padrões comuns em laços:</strong></p>\n<pre>int soma = 0;       // ACUMULADOR: começa em 0 e vai somando\nint cont = 0;       // CONTADOR: conta quantos itens processou\nint maior = -99999; // MÁXIMO: começa com valor muito baixo\n\nfor (int i = 1; i &lt;= 10; i++) {\n    int num;\n    scanf(\"%d\", &amp;num);\n    soma += num;\n    cont++;\n    if (num &gt; maior) maior = num;\n}\nprintf(\"Soma: %d | Média: %.2f | Maior: %d\\n\",\n       soma, (float)soma/cont, maior);</pre>",
+   "tipo": "texto",
+   "ordem": 3,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 16,
+   "unidade_id": 4,
+   "titulo": "Comparação, Cálculo de Fatorial",
+   "corpo": "{\"python\":\"# Fatorial com for, Python\\n# range(1, n+1) gera 1, 2, 3, ..., n\\nn = int(input('Digite um número: '))\\nif n < 0:\\n    print('Fatorial não definido para negativos')\\nelse:\\n    fatorial = 1\\n    for i in range(1, n + 1):\\n        fatorial *= i    # fatorial = fatorial * i\\n    print(f'{n}! = {fatorial}')\",\"java\":\"// Fatorial com for, Java\\n// Usa long para suportar números grandes\\nimport java.util.Scanner;\\npublic class Fatorial {\\n    public static void main(String[] args) {\\n        Scanner sc = new Scanner(System.in);\\n        int n = sc.nextInt();\\n        if (n < 0) {\\n            System.out.println(\\\"Fatorial nao definido para negativos\\\");\\n        } else {\\n            long fatorial = 1;\\n            for (int i = 1; i <= n; i++) {\\n                fatorial *= i;\\n            }\\n            System.out.println(n + \\\"! = \\\" + fatorial);\\n        }\\n    }\\n}\",\"c\":\"// Fatorial com for, C\\n// Usa long long para suportar números grandes\\n#include <stdio.h>\\nint main() {\\n    int n;\\n    scanf(\\\"%d\\\", &n);\\n    if (n < 0) {\\n        printf(\\\"Fatorial nao definido para negativos\\\\n\\\");\\n    } else {\\n        long long fatorial = 1;\\n        for (int i = 1; i <= n; i++) {\\n            fatorial *= i;\\n        }\\n        printf(\\\"%d! = %lld\\\\n\\\", n, fatorial);\\n    }\\n    return 0;\\n}\",\"observacoes\":\"<strong>O algoritmo é idêntico nas três:</strong> inicializar fatorial = 1, multiplicar por cada i de 1 até n.<br><strong>Python</strong> usa range(1, n+1), o limite superior é exclusivo.<br><strong>Java</strong> usa <code>long</code> (64 bits); <strong>C</strong> usa <code>long long</code> com <code>%lld</code>.<br>O operador <code>*=</code> existe nas três com a mesma sintaxe.\"}",
+   "tipo": "comparacao",
+   "ordem": 4,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 17,
+   "unidade_id": 5,
+   "titulo": "O que Muda e o que Permanece?",
+   "corpo": "<p>Você já aprendeu os conceitos fundamentais: variáveis, condicionais e repetição. Agora vamos observar como esses conceitos aparecem em <strong>Python, Java e C</strong>.</p>\n<div class=\"destaque-info\"><strong>Ideia central desta unidade:</strong> a lógica de programação é universal. O mesmo algoritmo para calcular fatorial funciona em Python, Java e C. O que muda é apenas a sintaxe, não o raciocínio.</div>\n<p><strong>A grande revelação desta unidade:</strong> a lógica é universal. Um algoritmo para calcular fatorial funciona da mesma forma nas três, o que muda é apenas a sintaxe.</p>\n<p>Pense nas linguagens humanas: \"I love programming\", \"Amo programação\", \"J'aime la programmation\", a ideia é a mesma, a expressão muda. Com linguagens de programação é igual.</p>\n<p><strong>Tabela comparativa:</strong></p>\n<pre>Aspecto           Python          Java              C\n─────────────────────────────────────────────────────\nDeclaração tipo   Não precisa     Obrigatória       Obrigatória\nBlocos            Indentação      Chaves {}         Chaves {}\nelse if           elif            else if           else if\nOperadores lógic  and/or/not      &&/||/!           &&/||/!\nEntrada           input()         Scanner           scanf()\nSaída             print()         System.out.println printf()\nPonto e vírgula   Não             Obrigatório       Obrigatório\nEstrutura mínima  Só o código     Classe + main     Função main\nTipagem           Dinâmica        Estática          Estática\nGerenc. memória   Automático      Automático (GC)   Manual</pre>",
+   "tipo": "texto",
+   "ordem": 1,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 18,
+   "unidade_id": 5,
+   "titulo": "Diferenças Importantes na Prática",
+   "corpo": "<p><strong>Tipagem dinâmica vs. estática:</strong></p>\n<pre># Python, tipagem dinâmica\nx = 10        # x é int\nx = \"texto\"   # agora x é string, Python aceita!</pre>\n<pre>// C, tipagem estática\nint x = 10;\nx = \"texto\";  // ERRO! x é int, não pode receber string</pre>\n\n<p><strong>Gerenciamento de memória:</strong></p>\n<p>Em C, memória alocada dinamicamente deve ser liberada manualmente:</p>\n<pre>int *v = malloc(10 * sizeof(int));  // aloca\n// usa o vetor...\nfree(v);  // OBRIGATÓRIO! Sem isso: vazamento de memória</pre>\n<p>Em Java e Python, o <strong>garbage collector</strong> faz isso automaticamente.</p>\n\n<p><strong>Portabilidade:</strong></p>\n<ul>\n<li><strong>C:</strong> gera executável específico para o sistema operacional. Um .exe do Windows não roda no Linux.</li>\n<li><strong>Java:</strong> compila para bytecode (.class). A JVM executa em qualquer sistema. \"Write once, run anywhere.\"</li>\n<li><strong>Python:</strong> o mesmo .py roda em qualquer sistema com Python instalado.</li>\n</ul>\n\n<p><strong>Velocidade de execução:</strong><br>\nC > Java > Python (em geral). C gera código de máquina nativo, o mais rápido. Java tem a JVM como intermediário. Python é interpretado, mais lento, mas o desenvolvedor escreve mais rápido.</p>",
+   "tipo": "texto",
+   "ordem": 2,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 19,
+   "unidade_id": 5,
+   "titulo": "Quando Usar Cada Linguagem?",
+   "corpo": "<p>Não existe linguagem \"melhor\", existe a linguagem certa para cada situação.</p>\n<p><strong>C é ideal para:</strong></p>\n<ul>\n<li>Sistemas operacionais (Linux, Windows são escritos em C)</li>\n<li>Drivers de hardware, firmware</li>\n<li>Aplicações que precisam de máxima velocidade</li>\n<li>Sistemas embarcados (Arduino, microcontroladores)</li>\n</ul>\n<p><strong>Java é ideal para:</strong></p>\n<ul>\n<li>Aplicações corporativas e web</li>\n<li>Android (apps mobile)</li>\n<li>Sistemas que precisam rodar em múltiplos sistemas operacionais</li>\n<li>Grandes projetos em equipe</li>\n</ul>\n<p><strong>Python é ideal para:</strong></p>\n<ul>\n<li>Ciência de dados, inteligência artificial, machine learning</li>\n<li>Scripts e automação de tarefas</li>\n<li>Desenvolvimento rápido de protótipos</li>\n<li>Ensino de programação (sintaxe simples e legível)</li>\n</ul>\n<p><strong>Neste curso, estudamos as três porque:</strong></p>\n<ol>\n<li>Os <strong>conceitos de lógica são universais</strong>, aprender em uma ajuda em todas</li>\n<li>Cada uma tem <strong>pontos fortes únicos</strong> que você vai encontrar na carreira</li>\n<li>Comparar linguagens <strong>aprofunda a compreensão</strong>, quando você vê for em Python e em C e percebe que é a mesma coisa, o conceito fica muito mais sólido</li>\n</ol>",
+   "tipo": "texto",
+   "ordem": 3,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 20,
+   "unidade_id": 5,
+   "titulo": "Comparação, Busca e Soma em Listas/Arrays",
+   "corpo": "{\"python\":\"# Soma e busca em lista, Python\\n# Listas são dinâmicas: crescem automaticamente\\nnumeros = []\\nfor i in range(5):\\n    n = int(input(f'Número {i+1}: '))\\n    numeros.append(n)\\n\\nsoma  = sum(numeros)          # função embutida!\\nmedia = soma / len(numeros)\\nmaior = max(numeros)          # função embutida!\\nprint(f'Soma: {soma} | Média: {media:.1f} | Maior: {maior}')\\n\\nalvo = int(input('Qual número buscar? '))\\nif alvo in numeros:           # operador 'in' busca na lista\\n    print(f'{alvo} na posição {numeros.index(alvo)}')\\nelse:\\n    print(f'{alvo} não encontrado')\",\"java\":\"// Soma e busca em array, Java\\nimport java.util.Scanner;\\npublic class SomaBusca {\\n    public static void main(String[] args) {\\n        Scanner sc = new Scanner(System.in);\\n        int[] numeros = new int[5];   // tamanho fixo!\\n        int soma = 0;\\n        for (int i = 0; i < 5; i++) {\\n            numeros[i] = sc.nextInt();\\n            soma += numeros[i];\\n        }\\n        double media = (double) soma / numeros.length;\\n        int maior = numeros[0];\\n        for (int n : numeros)         // for-each!\\n            if (n > maior) maior = n;\\n        System.out.printf(\\\"Soma: %d | Media: %.1f | Maior: %d%n\\\",\\n                          soma, media, maior);\\n        int alvo = sc.nextInt();\\n        boolean enc = false;\\n        for (int i = 0; i < numeros.length; i++) {\\n            if (numeros[i] == alvo) {\\n                System.out.println(alvo + \\\" na posicao \\\" + i);\\n                enc = true; break;\\n            }\\n        }\\n        if (!enc) System.out.println(alvo + \\\" nao encontrado\\\");\\n    }\\n}\",\"c\":\"// Soma e busca em array, C\\n#include <stdio.h>\\nint main() {\\n    int numeros[5];\\n    int soma = 0;\\n    for (int i = 0; i < 5; i++) {\\n        scanf(\\\"%d\\\", &numeros[i]);\\n        soma += numeros[i];\\n    }\\n    float media = (float) soma / 5;\\n    int maior = numeros[0];\\n    for (int i = 1; i < 5; i++)\\n        if (numeros[i] > maior) maior = numeros[i];\\n    printf(\\\"Soma: %d | Media: %.1f | Maior: %d\\\\n\\\",\\n           soma, media, maior);\\n    int alvo;\\n    scanf(\\\"%d\\\", &alvo);\\n    int enc = 0;\\n    for (int i = 0; i < 5; i++) {\\n        if (numeros[i] == alvo) {\\n            printf(\\\"%d na posicao %d\\\\n\\\", alvo, i);\\n            enc = 1; break;\\n        }\\n    }\\n    if (!enc) printf(\\\"%d nao encontrado\\\\n\\\", alvo);\\n    return 0;\\n}\",\"observacoes\":\"<strong>Python</strong> tem funções embutidas sum(), max(), len() e o operador in para busca, muito mais conciso.<br><strong>Java</strong> tem for-each e .length nos arrays.<br><strong>C</strong> não tem funções embutidas para soma ou máximo, você implementa manualmente.<br><strong>Cast de tipo:</strong> Java e C precisam de cast explícito (double) ou (float) para divisão com decimal.\"}",
+   "tipo": "comparacao",
+   "ordem": 4,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  }
+ ],
+ "exercicios": [
+  {
+   "id": 1,
+   "unidade_id": 1,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Segundo os livros de referência, qual é a definição mais precisa de algoritmo no contexto da computação?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"Um software instalado no computador para resolver problemas específicos\",\"Uma sequência finita, ordenada e não ambígua de passos para solucionar um problema ou realizar uma tarefa\",\"Uma linguagem de programação de alto nível utilizada por programadores\",\"Um tipo de dado especial usado para armazenar instruções\"]",
+   "resposta_correta": "Uma sequência finita, ordenada e não ambígua de passos para solucionar um problema ou realizar uma tarefa",
+   "explicacao": "Algoritmo é a sequência de passos, finita, ordenada e não ambígua, que resolve um problema. Não depende de linguagem de programação. 💡 Dica: Pense em uma receita culinária: ela é um algoritmo, existe independente de estar escrita em português ou inglês.",
+   "categoria": "formativa",
+   "ordem": 1,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 2,
+   "unidade_id": 1,
+   "enunciado": "{\"tipo\": \"codigo\", \"texto\": \"Um estudante escreveu o algoritmo abaixo para mostrar a tabuada do 5 (de 5 × 1 até 5 × 10). Observe que o passo 1 atribui o valor 1 à variável i e que o passo 4 manda voltar ao passo 1 (e não ao passo 2). Qual propriedade do algoritmo está sendo VIOLADA?\", \"linguagem\": \"generico\", \"codigo\": \"Passo 1: i ← 1\\nPasso 2: Escreva 5 × i\\nPasso 3: i ← i + 1\\nPasso 4: Se i <= 10, volte ao passo 1; caso contrário, vá ao passo 5\\nPasso 5: Termine\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"Definição\", \"Finitude\", \"Efetividade\", \"Saída\"]",
+   "resposta_correta": "Finitude",
+   "explicacao": "Voltar ao passo 1 faz i receber 1 de novo a cada repetição. Assim, ao chegar ao passo 4, i vale sempre 2 e a condição i <= 10 nunca deixa de ser verdadeira: o algoritmo nunca termina, violando a Finitude. Se o passo 4 voltasse ao passo 2, i continuaria crescendo até passar de 10. 💡 Dica: simule os passos com papel e lápis e acompanhe o valor de i em cada volta.",
+   "categoria": "formativa",
+   "ordem": 2,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 3,
+   "unidade_id": 1,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Qual é a ordem correta das etapas em um algoritmo para calcular a média de um aluno?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"Obter nota1 → Calcular média → Obter nota2 → Verificar aprovação\",\"Início → Obter nota1 → Obter nota2 → Calcular média → Verificar aprovação → Fim\",\"Calcular média → Obter notas → Verificar aprovação → Início → Fim\",\"Obter nota1 → Verificar aprovação → Obter nota2 → Calcular média\"]",
+   "resposta_correta": "Início → Obter nota1 → Obter nota2 → Calcular média → Verificar aprovação → Fim",
+   "explicacao": "Em qualquer algoritmo: primeiro obtemos os dados de entrada, depois processamos, depois geramos saída. Não é possível calcular uma média sem ter as notas antes. 💡 Dica: Todo algoritmo segue o padrão EPO: Entrada → Processamento → Saída.",
+   "categoria": "formativa",
+   "ordem": 3,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 4,
+   "unidade_id": 1,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Qual das formas de representação de algoritmos é mais adequada para facilitar a tradução direta para uma linguagem de programação?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"Descrição narrativa\",\"Fluxograma\",\"Pseudocódigo (linguagem algorítmica)\",\"Diagrama de entidade-relacionamento\"]",
+   "resposta_correta": "Pseudocódigo (linguagem algorítmica)",
+   "explicacao": "O pseudocódigo usa estruturas (SE/ENTÃO, ENQUANTO, PARA) muito semelhantes às linguagens reais. Traduzir para C ou Python é quase mecânico. 💡 Dica: Compare o pseudocódigo com o código C, linha por linha, eles são quase idênticos.",
+   "categoria": "formativa",
+   "ordem": 4,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 5,
+   "unidade_id": 1,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Segundo a arquitetura de Von Neumann, o processador busca e executa as instruções de forma sequencial na memória, uma de cada vez, seguindo o ciclo: busca → decodifica → executa → busca próxima.\"}",
+   "tipo": "verdadeiro_falso",
+   "opcoes": null,
+   "resposta_correta": "verdadeiro",
+   "explicacao": "O ciclo busca-decodifica-executa é a base dos computadores modernos. Isso explica por que os programas executam passo a passo. 💡 Dica: Pense no processador como um leitor muito veloz que lê e executa uma instrução de cada vez, nunca pulando.",
+   "categoria": "formativa",
+   "ordem": 5,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 6,
+   "unidade_id": 2,
+   "enunciado": "{\"tipo\":\"codigo\",\"texto\":\"Analise o código C abaixo. Qual valor será impresso?\",\"codigo\":\"int a = 5;\\nint b = 3;\\nint c = a * b + 2;\\nprintf(\\\"%d\\\", c);\",\"linguagem\":\"c\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"17\",\"40\",\"13\",\"10\"]",
+   "resposta_correta": "17",
+   "explicacao": "c = 5 * 3 + 2. Multiplicação primeiro: 5 × 3 = 15. Depois adição: 15 + 2 = 17. 💡 Dica: Em matemática, 5 × 3 + 2 = 17, não 25. Programação segue a mesma regra de precedência!",
+   "categoria": "formativa",
+   "ordem": 1,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 7,
+   "unidade_id": 2,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Qual é a principal diferença entre uma variável e uma constante simbólica em C?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"Variáveis são mais rápidas; constantes são mais lentas\",\"Uma variável pode ter seu valor alterado durante a execução; uma constante mantém o mesmo valor do início ao fim\",\"Constantes só podem armazenar números; variáveis armazenam qualquer tipo\",\"Não há diferença prática entre elas\"]",
+   "resposta_correta": "Uma variável pode ter seu valor alterado durante a execução; uma constante mantém o mesmo valor do início ao fim",
+   "explicacao": "Uma variável é uma posição de memória cujo conteúdo pode ser modificado. Uma constante (com #define ou const) tem seu valor fixado. Usar constantes para valores que nunca mudam (como PI) torna o código mais legível. 💡 Dica: \"Const\" vem de \"constante\", algo que não muda.",
+   "categoria": "formativa",
+   "ordem": 2,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 8,
+   "unidade_id": 2,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Em C, qual é a forma correta de declarar simultaneamente duas variáveis inteiras chamadas x e y?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"int x, y;\",\"x, y : int;\",\"integer x; integer y;\",\"var x, y = int;\"]",
+   "resposta_correta": "int x, y;",
+   "explicacao": "Em C, é possível declarar múltiplas variáveis do mesmo tipo separando os nomes por vírgula: tipo var1, var2; A sintaxe é sempre: tipo primeiro, depois os nomes. 💡 Dica: As outras opções usam sintaxes de Pascal ou pseudocódigo.",
+   "categoria": "formativa",
+   "ordem": 3,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 9,
+   "unidade_id": 2,
+   "enunciado": "{\"tipo\":\"codigo\",\"texto\":\"Qual será o valor de resultado após a execução?\",\"codigo\":\"float x = 7.0;\\nfloat y = 2.0;\\nfloat resultado = x / y;\",\"linguagem\":\"c\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"3\",\"3.0\",\"3.5\",\"Erro, divisão de floats não é permitida\"]",
+   "resposta_correta": "3.5",
+   "explicacao": "Quando ambas as variáveis são float, a divisão preserva as casas decimais. 7.0 / 2.0 = 3.5. Se fossem int (7/2), seria 3. 💡 Dica: A regra é simples: se pelo menos um operando é float, o resultado é float.",
+   "categoria": "formativa",
+   "ordem": 4,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 10,
+   "unidade_id": 2,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"O tipo char em C só pode armazenar letras do alfabeto, não podendo armazenar números inteiros.\"}",
+   "tipo": "verdadeiro_falso",
+   "opcoes": null,
+   "resposta_correta": "falso",
+   "explicacao": "O tipo char em C armazena 1 byte e pode representar tanto um caractere (pela tabela ASCII) quanto um número inteiro de -128 a 127. O caractere \"A\" corresponde ao inteiro 65 na tabela ASCII. 💡 Dica: Tente char c = 65; printf(\"%c\", c);, o resultado será a letra \"A\"!",
+   "categoria": "formativa",
+   "ordem": 5,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 11,
+   "unidade_id": 3,
+   "enunciado": "{\"tipo\":\"codigo\",\"texto\":\"Analise o código C abaixo. Qual mensagem será exibida se x = 15?\",\"codigo\":\"if (x > 10 && x < 20) {\\n    printf(\\\"Entre 10 e 20\\\");\\n} else if (x >= 20) {\\n    printf(\\\"Maior ou igual a 20\\\");\\n} else {\\n    printf(\\\"Menor ou igual a 10\\\");\\n}\",\"linguagem\":\"c\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"Menor ou igual a 10\",\"Entre 10 e 20\",\"Maior ou igual a 20\",\"Nenhuma mensagem\"]",
+   "resposta_correta": "Entre 10 e 20",
+   "explicacao": "x = 15. Verificando: 15 > 10 é verdadeiro E 15 < 20 é verdadeiro. Como ambas as condições do && são verdadeiras, o primeiro bloco executa. 💡 Dica: Com &&, AMBAS precisam ser verdadeiras.",
+   "categoria": "formativa",
+   "ordem": 1,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 12,
+   "unidade_id": 3,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Qual é a diferença entre os operadores = e == em C?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"Não há diferença, ambos comparam valores\",\"= é o operador de atribuição (armazena um valor em uma variável); == é o operador de igualdade (compara dois valores)\",\"== armazena valores; = compara\",\"= é usado em Java; == é usado em C\"]",
+   "resposta_correta": "= é o operador de atribuição (armazena um valor em uma variável); == é o operador de igualdade (compara dois valores)",
+   "explicacao": "= (um sinal) atribui um valor a uma variável: x = 5 armazena 5 em x. == (dois sinais) compara: x == 5 verifica se x é igual a 5. Usar = em vez de == dentro de um if é um dos bugs mais comuns! 💡 Dica progressiva: if(x = 5) não compara, atribui 5 e verifica se 5 é não-zero!",
+   "categoria": "formativa",
+   "ordem": 2,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 13,
+   "unidade_id": 3,
+   "enunciado": "{\"tipo\": \"codigo\", \"texto\": \"Em Python, como seria escrita a estrutura condicional equivalente ao código C abaixo?\", \"linguagem\": \"c\", \"codigo\": \"if (temperatura > 30) {\\n    printf(\\\"Quente\\\");\\n} else {\\n    printf(\\\"Frio\\\");\\n}\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"if temperatura > 30 then:\\n    print(\\\"Quente\\\")\\nelse:\\n    print(\\\"Frio\\\")\", \"if (temperatura > 30) {\\n    print(\\\"Quente\\\")\\n} else {\\n    print(\\\"Frio\\\")\\n}\", \"if temperatura > 30:\\n    print(\\\"Quente\\\")\\nelse:\\n    print(\\\"Frio\\\")\", \"if {temperatura > 30} print(\\\"Quente\\\") else print(\\\"Frio\\\")\"]",
+   "resposta_correta": "if temperatura > 30:\n    print(\"Quente\")\nelse:\n    print(\"Frio\")",
+   "explicacao": "Em Python não há chaves nem a palavra then: a condição termina com : (dois pontos) e o bloco é definido pela indentação. O else também termina com :. 💡 Dica: em Python, a indentação não é estilo, é sintaxe obrigatória.",
+   "categoria": "formativa",
+   "ordem": 3,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 14,
+   "unidade_id": 3,
+   "enunciado": "{\"tipo\":\"codigo\",\"texto\":\"Analise o código abaixo. Qual será a saída quando nota = 45?\",\"codigo\":\"if (nota >= 90) {\\n    printf(\\\"A\\\");\\n} else if (nota >= 80) {\\n    printf(\\\"B\\\");\\n} else if (nota >= 70) {\\n    printf(\\\"C\\\");\\n} else if (nota >= 60) {\\n    printf(\\\"D\\\");\\n} else {\\n    printf(\\\"F\\\");\\n}\",\"linguagem\":\"c\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"D\",\"C\",\"F\",\"B\"]",
+   "resposta_correta": "F",
+   "explicacao": "nota = 45. Nenhuma condição (>=90, >=80, >=70, >=60) é satisfeita por 45, portanto o bloco else final executa, imprimindo \"F\". 💡 Dica: Em uma cadeia if/else if, o computador testa de cima para baixo e executa o PRIMEIRO bloco verdadeiro.",
+   "categoria": "formativa",
+   "ordem": 4,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 15,
+   "unidade_id": 3,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Em Java, ao contrário de C, não é possível usar o operador && para combinar condições em uma estrutura if. Deve-se usar o operador AND por extenso.\"}",
+   "tipo": "verdadeiro_falso",
+   "opcoes": null,
+   "resposta_correta": "falso",
+   "explicacao": "Java usa os mesmos operadores que C: && para AND, || para OR, ! para NOT. O operador AND por extenso existe em Python (and), não em Java nem C. 💡 Dica: C, Java → && / || / !   Python → and / or / not",
+   "categoria": "formativa",
+   "ordem": 5,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 16,
+   "unidade_id": 4,
+   "enunciado": "{\"tipo\":\"codigo\",\"texto\":\"Qual será a saída do seguinte código C?\",\"codigo\":\"for (int i = 0; i < 3; i++) {\\n    printf(\\\"%d \\\", i);\\n}\",\"linguagem\":\"c\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"1 2 3\",\"0 1 2\",\"0 1 2 3\",\"1 2\"]",
+   "resposta_correta": "0 1 2",
+   "explicacao": "O laço inicia com i=0, executa enquanto i<3. i=0 (imprime 0) → i=1 (imprime 1) → i=2 (imprime 2) → i=3 (3<3 é FALSO, para). Saída: \"0 1 2\". 💡 Dica: Simule o laço passo a passo na cabeça.",
+   "categoria": "formativa",
+   "ordem": 1,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 17,
+   "unidade_id": 4,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Em Python, qual é o equivalente ao laço for(i=1; i<=5; i++) de C, usando a função range()?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"for i in range(0, 5):\",\"for i in range(1, 6):\",\"for i in range(5):\",\"for i in range(1, 5):\"]",
+   "resposta_correta": "for i in range(1, 6):",
+   "explicacao": "range(1, 6) gera: 1, 2, 3, 4, 5. O parâmetro inicial é inclusivo e o final é exclusivo. 💡 Dica: range(início, fim), o início é incluído, o fim é excluído. Para incluir o 5, o fim deve ser 6.",
+   "categoria": "formativa",
+   "ordem": 2,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 18,
+   "unidade_id": 4,
+   "enunciado": "{\"tipo\":\"codigo\",\"texto\":\"Qual será o valor impresso?\",\"codigo\":\"int contador = 0;\\nint i = 1;\\nwhile (i <= 10) {\\n    if (i % 2 == 0) {\\n        contador++;\\n    }\\n    i++;\\n}\\nprintf(\\\"%d\\\", contador);\",\"linguagem\":\"c\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"4\",\"5\",\"6\",\"10\"]",
+   "resposta_correta": "5",
+   "explicacao": "O código conta os pares de 1 a 10. O operador % retorna o resto da divisão; se resto por 2 for zero, o número é par. Pares de 1 a 10: 2, 4, 6, 8, 10 = 5 números. 💡 Dica: i % 2 == 0 significa \"i é divisível por 2\", ou seja, é par.",
+   "categoria": "formativa",
+   "ordem": 3,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 19,
+   "unidade_id": 4,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"O que acontece quando o comando continue é executado dentro de um laço for?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"O laço é encerrado imediatamente\",\"O programa para de executar\",\"O restante da iteração atual é ignorado e o laço avança para a próxima iteração\",\"O laço reinicia do início, zerando a variável de controle\"]",
+   "resposta_correta": "O restante da iteração atual é ignorado e o laço avança para a próxima iteração",
+   "explicacao": "continue pula o restante do bloco atual e vai para o próximo incremento/verificação. Diferente do break, que sai do laço completamente. 💡 Dica: break = sair do laço. continue = pular esta iteração. São complementares!",
+   "categoria": "formativa",
+   "ordem": 4,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 20,
+   "unidade_id": 4,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Em Java, o laço for-each (enhanced for) percorre automaticamente todos os elementos de um array ou coleção, sem necessidade de gerenciar manualmente o índice.\"}",
+   "tipo": "verdadeiro_falso",
+   "opcoes": null,
+   "resposta_correta": "verdadeiro",
+   "explicacao": "Em Java, for (int elemento : array) percorre todos os elementos do array automaticamente. O equivalente em Python é for elemento in lista:. Use for-each quando não precisar do índice. 💡 Dica: Mais seguro que o for tradicional, evita erros de índice fora dos limites.",
+   "categoria": "formativa",
+   "ordem": 5,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 21,
+   "unidade_id": 5,
+   "enunciado": "{\"tipo\": \"codigo\", \"texto\": \"Analise os três trechos abaixo, que calculam o fatorial de um número n em Python, Java e C. Qual afirmação é correta?\", \"linguagem\": \"generico\", \"codigo\": \"# Python\\nfatorial = 1\\nfor i in range(1, n + 1):\\n    fatorial *= i\\n\\n// Java\\nlong fatorial = 1;\\nfor (int i = 1; i <= n; i++) {\\n    fatorial *= i;\\n}\\n\\n// C\\nlong long fatorial = 1;\\nfor (int i = 1; i <= n; i++) {\\n    fatorial *= i;\\n}\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"Os três usam sintaxe completamente diferente e não têm equivalência lógica\", \"O algoritmo subjacente (acumular o produto de 1 até n) é idêntico nos três; a diferença é apenas sintática\", \"Python está errado pois usa range(1, n+1) em vez de range(1, n)\", \"Java e C são idênticos em tudo\"]",
+   "resposta_correta": "O algoritmo subjacente (acumular o produto de 1 até n) é idêntico nos três; a diferença é apenas sintática",
+   "explicacao": "O mesmo algoritmo pode ser implementado em diferentes linguagens. A lógica é idêntica. A sintaxe varia: Python não precisa de tipos e usa range(), C e Java são muito similares. 💡 Dica: range(1, n+1) em Python está correto, o limite superior é exclusivo.",
+   "categoria": "formativa",
+   "ordem": 1,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 22,
+   "unidade_id": 5,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Qual das afirmações abaixo descreve corretamente a diferença entre C e Java no gerenciamento de memória?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"Em C, a memória é gerenciada automaticamente pelo garbage collector; em Java, o programador a gerencia manualmente\",\"Em Java, um garbage collector libera automaticamente a memória não utilizada; em C, o programador deve liberar manualmente com free()\",\"Ambas as linguagens usam garbage collector\",\"Nenhuma das linguagens requer gerenciamento de memória\"]",
+   "resposta_correta": "Em Java, um garbage collector libera automaticamente a memória não utilizada; em C, o programador deve liberar manualmente com free()",
+   "explicacao": "Java tem garbage collection automático (a JVM libera memória não usada). Em C, memória alocada com malloc() deve ser liberada com free(), esquecer causa memory leak. 💡 Dica: Memory leak em C é como um vazamento num cano, consome memória até o sistema travar.",
+   "categoria": "formativa",
+   "ordem": 2,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 23,
+   "unidade_id": 5,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Em Python, o que acontece quando se tenta adicionar um número inteiro a uma string, como em \\\"nota: \\\" + 10?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"A operação é realizada normalmente, convertendo o inteiro para string automaticamente\",\"O Python lança um TypeError, pois não é possível concatenar tipos diferentes diretamente\",\"O resultado é a string \\\"nota: 10\\\"\",\"O Python converte a string para número e soma\"]",
+   "resposta_correta": "O Python lança um TypeError, pois não é possível concatenar tipos diferentes diretamente",
+   "explicacao": "Python tem tipagem dinâmica mas não faz conversão implícita entre tipos incompatíveis. Use str(10) ou f-strings. 💡 Dica: Use f\"nota: {10}\" ou \"nota: \" + str(10).",
+   "categoria": "formativa",
+   "ordem": 3,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 24,
+   "unidade_id": 5,
+   "enunciado": "{\"tipo\": \"texto\", \"texto\": \"O que há em comum entre as três abordagens de saída formatada: printf() em C, System.out.printf() em Java, e print(f\\\"...\\\") em Python?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"Todas usam o símbolo % para inserir variáveis na string\",\"Todas permitem inserir valores de variáveis dentro de uma string de saída, mas com sintaxes diferentes\",\"Todas são exatamente iguais em sintaxe\",\"Apenas C e Java são equivalentes; Python funciona de forma completamente diferente\"]",
+   "resposta_correta": "Todas permitem inserir valores de variáveis dentro de uma string de saída, mas com sintaxes diferentes",
+   "explicacao": "O conceito é o mesmo: interpolação de variáveis na string de saída. A diferença está na sintaxe: C/Java usam especificadores %s, %d; Python moderno usa f-strings com {} direto no texto. 💡 Dica: Três formas de expressar a mesma ideia, inserir variáveis em texto.",
+   "categoria": "formativa",
+   "ordem": 4,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 25,
+   "unidade_id": 5,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Um programa escrito em Java pode ser executado em qualquer sistema operacional que tenha a JVM instalada, sem necessidade de recompilar o código. O mesmo não é verdade para programas em C, que geralmente precisam ser recompilados para cada sistema operacional alvo.\"}",
+   "tipo": "verdadeiro_falso",
+   "opcoes": null,
+   "resposta_correta": "verdadeiro",
+   "explicacao": "Este é o princípio \"Write Once, Run Anywhere\" do Java. O compilador Java gera bytecode (não código nativo), que a JVM interpreta em qualquer plataforma. Em C, o executável é específico para o sistema, um .exe do Windows não roda no Linux. 💡 Dica: Por isso Android usa Java/Kotlin, a JVM cuida das diferenças de hardware.",
+   "categoria": "formativa",
+   "ordem": 5,
+   "criado_em": "2026-04-22T12:04:22.560Z"
+  },
+  {
+   "id": 26,
+   "unidade_id": 1,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Qual das opções abaixo descreve corretamente o que é um algoritmo?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"Um programa de computador instalado no sistema\",\"Uma sequência finita e ordenada de passos para resolver um problema\",\"Uma linguagem de programação de alto nível\",\"Um tipo especial de variável\"]",
+   "resposta_correta": "Uma sequência finita e ordenada de passos para resolver um problema",
+   "explicacao": "Algoritmo é uma sequência finita, ordenada e não ambígua de passos. Não é um programa nem uma linguagem de programação.",
+   "categoria": "diagnostica",
+   "ordem": 1,
+   "criado_em": "2026-04-22T12:04:22.617Z"
+  },
+  {
+   "id": 27,
+   "unidade_id": 1,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Em um algoritmo, se um passo retorna sempre ao início sem condição de parada, qual propriedade fundamental é violada?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"Definição\",\"Efetividade\",\"Finitude\",\"Entrada\"]",
+   "resposta_correta": "Finitude",
+   "explicacao": "Finitude exige que o algoritmo termine após número finito de passos. Um retorno incondicional ao início cria loop infinito.",
+   "categoria": "diagnostica",
+   "ordem": 2,
+   "criado_em": "2026-04-22T12:04:22.618Z"
+  },
+  {
+   "id": 28,
+   "unidade_id": 2,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Em programação, uma variável representa:\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"Um valor fixo\",\"Uma posição de memória identificada simbolicamente que armazena um valor\",\"Uma instrução de saída\",\"Um operador aritmético\"]",
+   "resposta_correta": "Uma posição de memória identificada simbolicamente que armazena um valor",
+   "explicacao": "Uma variável é um espaço na memória com nome simbólico. Seu valor pode mudar durante a execução.",
+   "categoria": "diagnostica",
+   "ordem": 3,
+   "criado_em": "2026-04-22T12:04:22.618Z"
+  },
+  {
+   "id": 29,
+   "unidade_id": 2,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Em C: int x=10; int y=3; int z=x/y; Qual o valor de z?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"3.33\",\"3\",\"4\",\"Erro\"]",
+   "resposta_correta": "3",
+   "explicacao": "Em C, divisão entre inteiros descarta a parte decimal. 10/3=3. Para 3.33 seria necessário usar float.",
+   "categoria": "diagnostica",
+   "ordem": 4,
+   "criado_em": "2026-04-22T12:04:22.618Z"
+  },
+  {
+   "id": 30,
+   "unidade_id": 3,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Em C, qual operador lógico representa \\\"E\\\", ambas as condições devem ser verdadeiras?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"||\",\"&&\",\"!\",\"==\"]",
+   "resposta_correta": "&&",
+   "explicacao": "Em C, && é o AND lógico. || é OR, ! é NOT, == é comparação de igualdade.",
+   "categoria": "diagnostica",
+   "ordem": 5,
+   "criado_em": "2026-04-22T12:04:22.618Z"
+  },
+  {
+   "id": 31,
+   "unidade_id": 3,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Dado nota=55: if(nota>=60){printf(\\\"A\\\");} else if(nota>=50){printf(\\\"B\\\");} else{printf(\\\"C\\\");} Qual a saída?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"A\",\"B\",\"C\",\"Nenhuma\"]",
+   "resposta_correta": "B",
+   "explicacao": "nota=55. 55>=60 é falso. 55>=50 é verdadeiro → imprime \"B\".",
+   "categoria": "diagnostica",
+   "ordem": 6,
+   "criado_em": "2026-04-22T12:04:22.618Z"
+  },
+  {
+   "id": 32,
+   "unidade_id": 4,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Qual é a principal diferença entre while e do-while em C?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"Não há diferença\",\"while verifica antes; do-while executa pelo menos uma vez antes de verificar\",\"while é mais rápido\",\"do-while só aceita números\"]",
+   "resposta_correta": "while verifica antes; do-while executa pelo menos uma vez antes de verificar",
+   "explicacao": "while: condição antes (pode nunca executar). do-while: executa ao menos 1 vez, verifica no final.",
+   "categoria": "diagnostica",
+   "ordem": 7,
+   "criado_em": "2026-04-22T12:04:22.618Z"
+  },
+  {
+   "id": 33,
+   "unidade_id": 4,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Int x=10; while(x>0){x=x-3;} Quantas vezes o bloco executa?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"3 vezes\",\"4 vezes\",\"10 vezes\",\"Infinitamente\"]",
+   "resposta_correta": "4 vezes",
+   "explicacao": "x=10(sim,x=7), x=7(sim,x=4), x=4(sim,x=1), x=1(sim,x=-2), x=-2(não). Total: 4 execuções.",
+   "categoria": "diagnostica",
+   "ordem": 8,
+   "criado_em": "2026-04-22T12:04:22.618Z"
+  },
+  {
+   "id": 34,
+   "unidade_id": 5,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Qual mostra a declaração correta de variável inteira nas 3 linguagens?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"Python: int x=42 / Java: x=42 / C: int x=42;\",\"Python: x=42 / Java: int x=42; / C: int x=42;\",\"Python: var x=42 / Java: int x=42; / C: int x=42;\",\"Python: x=42 / Java: int x=42; / C: x=42;\"]",
+   "resposta_correta": "Python: x=42 / Java: int x=42; / C: int x=42;",
+   "explicacao": "Python não declara tipo. Java e C exigem tipo antes do nome.",
+   "categoria": "diagnostica",
+   "ordem": 9,
+   "criado_em": "2026-04-22T12:04:22.618Z"
+  },
+  {
+   "id": 35,
+   "unidade_id": 5,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Um programa Java compilado em Windows pode rodar em Linux sem recompilação. Isso NÃO vale para C.\"}",
+   "tipo": "verdadeiro_falso",
+   "opcoes": null,
+   "resposta_correta": "verdadeiro",
+   "explicacao": "Java gera bytecode (portável via JVM). C gera binário nativo específico por plataforma.",
+   "categoria": "diagnostica",
+   "ordem": 10,
+   "criado_em": "2026-04-22T12:04:22.618Z"
+  },
+  {
+   "id": 36,
+   "unidade_id": 1,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"While com i de 1 a 5 somando: resultado final?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"10\",\"15\",\"25\",\"5\"]",
+   "resposta_correta": "15",
+   "explicacao": "1+2+3+4+5=15. Padrão clássico de acumulador.",
+   "categoria": "avaliacao_final",
+   "ordem": 1,
+   "criado_em": "2026-04-22T12:04:22.618Z"
+  },
+  {
+   "id": 37,
+   "unidade_id": 1,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Algoritmo claro, finito, mas que nunca produz saída, qual propriedade está violada?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"Finitude\",\"Definição\",\"Saída\",\"Efetividade\"]",
+   "resposta_correta": "Saída",
+   "explicacao": "Todo algoritmo deve produzir uma ou mais saídas. Sem saída, não serve ao propósito computacional.",
+   "categoria": "avaliacao_final",
+   "ordem": 2,
+   "criado_em": "2026-04-22T12:04:22.618Z"
+  },
+  {
+   "id": 38,
+   "unidade_id": 2,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Int a=5; int b=3; int c=a*b+2; printf(\\\"%d\\\",c); Qual valor é impresso?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"17\",\"40\",\"25\",\"13\"]",
+   "resposta_correta": "17",
+   "explicacao": "Precedência: 5*3=15, depois 15+2=17. Multiplicação tem precedência sobre adição.",
+   "categoria": "avaliacao_final",
+   "ordem": 3,
+   "criado_em": "2026-04-22T12:04:22.618Z"
+  },
+  {
+   "id": 39,
+   "unidade_id": 2,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"O tipo char em C pode armazenar números inteiros de -128 a 127 além de caracteres.\"}",
+   "tipo": "verdadeiro_falso",
+   "opcoes": null,
+   "resposta_correta": "verdadeiro",
+   "explicacao": "char usa 1 byte = 8 bits → -128 a 127. A letra A = 65 na tabela ASCII.",
+   "categoria": "avaliacao_final",
+   "ordem": 4,
+   "criado_em": "2026-04-22T12:04:22.618Z"
+  },
+  {
+   "id": 40,
+   "unidade_id": 3,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"X=15: if(x>10&&x<20){printf(\\\"A\\\");} else if(x>=20){printf(\\\"B\\\");} else{printf(\\\"C\\\");} Saída?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"A\",\"B\",\"C\",\"Nenhuma\"]",
+   "resposta_correta": "A",
+   "explicacao": "15>10 true E 15<20 true. Ambas verdadeiras com && → executa primeiro bloco → \"A\".",
+   "categoria": "avaliacao_final",
+   "ordem": 5,
+   "criado_em": "2026-04-22T12:04:22.618Z"
+  },
+  {
+   "id": 41,
+   "unidade_id": 3,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Em Python, \\\"nota: \\\" + 10 resulta em:\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"Retorna \\\"nota: 10\\\"\",\"Lança TypeError pois não concatena str e int diretamente\",\"Converte automaticamente\",\"Soma os valores ASCII\"]",
+   "resposta_correta": "Lança TypeError pois não concatena str e int diretamente",
+   "explicacao": "Python não faz conversão implícita entre tipos. Use str(10) ou f\"nota: {10}\".",
+   "categoria": "avaliacao_final",
+   "ordem": 6,
+   "criado_em": "2026-04-22T12:04:22.618Z"
+  },
+  {
+   "id": 42,
+   "unidade_id": 4,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"For(i=0;i<3;i++){for(j=0;j<3;j++){printf(\\\"*\\\");}} Quantos asteriscos?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"3\",\"6\",\"9\",\"12\"]",
+   "resposta_correta": "9",
+   "explicacao": "3 iterações externas × 3 internas = 9. Laços aninhados multiplicam as iterações.",
+   "categoria": "avaliacao_final",
+   "ordem": 7,
+   "criado_em": "2026-04-22T12:04:22.618Z"
+  },
+  {
+   "id": 43,
+   "unidade_id": 4,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"O for-each em Java garante que nunca ocorrerá ArrayIndexOutOfBoundsException ao percorrer o array.\"}",
+   "tipo": "verdadeiro_falso",
+   "opcoes": null,
+   "resposta_correta": "verdadeiro",
+   "explicacao": "O for-each gerencia o índice internamente e nunca ultrapassa os limites. Mais seguro que o for tradicional.",
+   "categoria": "avaliacao_final",
+   "ordem": 8,
+   "criado_em": "2026-04-22T12:04:22.618Z"
+  },
+  {
+   "id": 44,
+   "unidade_id": 5,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Em C, memória alocada com malloc() deve ser liberada com free(). Em Java, o garbage collector faz isso automaticamente.\"}",
+   "tipo": "verdadeiro_falso",
+   "opcoes": null,
+   "resposta_correta": "verdadeiro",
+   "explicacao": "C requer free() manual, esquecer causa memory leak. Java/Python têm GC automático.",
+   "categoria": "avaliacao_final",
+   "ordem": 9,
+   "criado_em": "2026-04-22T12:04:22.618Z"
+  },
+  {
+   "id": 45,
+   "unidade_id": 5,
+   "enunciado": "{\"tipo\":\"texto\",\"texto\":\"Qual afirmação sobre tipagem entre Python e C é CORRETA?\"}",
+   "tipo": "multipla_escolha",
+   "opcoes": "[\"Ambas estáticas\",\"Python: dinâmica (tipo inferido em runtime); C: estática (tipo declarado na compilação)\",\"C: dinâmica; Python: estática\",\"Ambas dinâmicas\"]",
+   "resposta_correta": "Python: dinâmica (tipo inferido em runtime); C: estática (tipo declarado na compilação)",
+   "explicacao": "Python: x=10 int, x=\"texto\" str (mesmo nome, tipos diferentes). C: int x=10, tipo fixo para sempre.",
+   "categoria": "avaliacao_final",
+   "ordem": 10,
+   "criado_em": "2026-04-22T12:04:22.618Z"
+  },
+  {
+   "unidade_id": 1,
+   "enunciado": "{\"tipo\": \"ordenar\", \"texto\": \"Coloque os passos do algoritmo da média de duas notas na ordem correta de execução.\", \"linguagem\": \"generico\", \"linhas\": [\"Calcular a média das duas notas\", \"Mostrar o resultado (aprovado ou reprovado)\", \"Ler a primeira nota\", \"Comparar a média com 7,0\", \"Ler a segunda nota\"]}",
+   "tipo": "ordenar_linhas",
+   "opcoes": null,
+   "resposta_correta": "[\"Ler a primeira nota\",\"Ler a segunda nota\",\"Calcular a média das duas notas\",\"Comparar a média com 7,0\",\"Mostrar o resultado (aprovado ou reprovado)\"]",
+   "explicacao": "Primeiro entram os dados (ler as duas notas), depois vem o processamento (calcular e comparar) e, por fim, a saída (mostrar o resultado). 💡 Dica: entrada → processamento → saída.",
+   "categoria": "formativa",
+   "ordem": 6,
+   "id": 46
+  },
+  {
+   "unidade_id": 1,
+   "enunciado": "{\"tipo\": \"completar\", \"texto\": \"Complete o código Python que calcula a média de duas notas e classifica o aluno.\", \"linguagem\": \"python\", \"codigo\": \"nota1 = float(input(\\\"Nota 1: \\\"))\\nnota2 = float(input(\\\"Nota 2: \\\"))\\nmedia = (nota1 ___1___ nota2) / ___2___\\nif media >= 7.0:\\n    print(\\\"Aprovado\\\")\\n___3___:\\n    print(\\\"Reprovado\\\")\", \"lacunas\": [[\"+\", \"-\", \"*\"], [\"2\", \"1\", \"nota2\"], [\"else\", \"elif\", \"then\"]]}",
+   "tipo": "completar_codigo",
+   "opcoes": null,
+   "resposta_correta": "[\"+\",\"2\",\"else\"]",
+   "explicacao": "A média de duas notas é a soma dividida por 2, e o caminho alternativo do if é o else (em Python, seguido de dois-pontos). 💡 Dica: confira o cálculo com nota1 = 8 e nota2 = 6.",
+   "categoria": "formativa",
+   "ordem": 7,
+   "id": 47
+  },
+  {
+   "unidade_id": 2,
+   "enunciado": "{\"tipo\": \"ordenar\", \"texto\": \"Ordene as linhas do programa em C para que cada variável seja declarada antes de ser usada.\", \"linguagem\": \"c\", \"linhas\": [\"int area = base * altura;\", \"printf(\\\"%d\\\", area);\", \"int base = 5;\", \"int altura = base * 2;\"]}",
+   "tipo": "ordenar_linhas",
+   "opcoes": null,
+   "resposta_correta": "[\"int base = 5;\",\"int altura = base * 2;\",\"int area = base * altura;\",\"printf(\\\"%d\\\", area);\"]",
+   "explicacao": "Uma variável só pode ser usada depois de declarada e com valor: base vem primeiro, depois altura (que usa base), depois area (que usa as duas) e, por fim, a impressão. 💡 Dica: ao ordenar, pergunte de que valores cada linha depende.",
+   "categoria": "formativa",
+   "ordem": 6,
+   "id": 48
+  },
+  {
+   "unidade_id": 2,
+   "enunciado": "{\"tipo\": \"completar\", \"texto\": \"Complete a declaração das variáveis em Java escolhendo o tipo mais adequado para cada valor.\", \"linguagem\": \"java\", \"codigo\": \"___1___ idade = 17;\\ndouble altura = 1.68;\\n___2___ nome = \\\"Ana\\\";\\nSystem.out.println(nome + \\\" tem \\\" + idade + \\\" anos\\\");\", \"lacunas\": [[\"int\", \"boolean\", \"String\"], [\"String\", \"int\", \"boolean\"]]}",
+   "tipo": "completar_codigo",
+   "opcoes": null,
+   "resposta_correta": "[\"int\",\"String\"]",
+   "explicacao": "Idade é um número inteiro (int) e nome é um texto (String). Em Java o tipo é obrigatório na declaração. 💡 Dica: o tipo precisa combinar com o valor atribuído.",
+   "categoria": "formativa",
+   "ordem": 7,
+   "id": 49
+  },
+  {
+   "unidade_id": 3,
+   "enunciado": "{\"tipo\": \"completar\", \"texto\": \"Complete a estrutura condicional em Python para classificar a nota em aprovado, recuperação ou reprovado.\", \"linguagem\": \"python\", \"codigo\": \"nota = 6.5\\nif nota >= 7:\\n    print(\\\"Aprovado\\\")\\n___1___ nota >= 5:\\n    print(\\\"Recuperação\\\")\\n___2___:\\n    print(\\\"Reprovado\\\")\", \"lacunas\": [[\"elif\", \"else if\", \"elseif\"], [\"else\", \"elif\", \"otherwise\"]]}",
+   "tipo": "completar_codigo",
+   "opcoes": null,
+   "resposta_correta": "[\"elif\",\"else\"]",
+   "explicacao": "Em Python o “senão se” é elif e o “senão” final é else, ambos seguidos de dois-pontos nos casos do código. 💡 Dica: C e Java escrevem else if em duas palavras.",
+   "categoria": "formativa",
+   "ordem": 6,
+   "id": 50
+  },
+  {
+   "unidade_id": 3,
+   "enunciado": "{\"tipo\": \"ordenar\", \"texto\": \"Ordene as linhas do programa em Java para que ele declare a idade e escreva a mensagem correta.\", \"linguagem\": \"java\", \"linhas\": [\"} else {\", \"    System.out.println(\\\"Maior de idade\\\");\", \"}\", \"int idade = 20;\", \"    System.out.println(\\\"Menor de idade\\\");\", \"if (idade >= 18) {\"]}",
+   "tipo": "ordenar_linhas",
+   "opcoes": null,
+   "resposta_correta": "[\"int idade = 20;\",\"if (idade >= 18) {\",\"    System.out.println(\\\"Maior de idade\\\");\",\"} else {\",\"    System.out.println(\\\"Menor de idade\\\");\",\"}\"]",
+   "explicacao": "A variável é declarada primeiro; depois vem o if com seu bloco, o else e o fechamento final. 💡 Dica: cada chave que abre precisa de uma que fecha.",
+   "categoria": "formativa",
+   "ordem": 7,
+   "id": 51
+  },
+  {
+   "unidade_id": 4,
+   "enunciado": "{\"tipo\": \"completar\", \"texto\": \"Complete o laço for em C para calcular o fatorial de 5.\", \"linguagem\": \"c\", \"codigo\": \"int n = 5;\\nint fatorial = 1;\\nfor (int i = 1; i ___1___ n; i___2___) {\\n    fatorial *= i;\\n}\\nprintf(\\\"%d\\\", fatorial);\", \"lacunas\": [[\"<=\", \"<\", \">=\"], [\"++\", \"--\", \"+=\"]]}",
+   "tipo": "completar_codigo",
+   "opcoes": null,
+   "resposta_correta": "[\"<=\",\"++\"]",
+   "explicacao": "Para multiplicar de 1 até n inclusive, a condição é i <= n e o contador avança com i++. Com i < n o último fator seria perdido. 💡 Dica: teste com n = 3 e anote os valores de i.",
+   "categoria": "formativa",
+   "ordem": 6,
+   "id": 52
+  },
+  {
+   "unidade_id": 4,
+   "enunciado": "{\"tipo\": \"ordenar\", \"texto\": \"Ordene as linhas do laço while em Python para que ele escreva 1, 2 e 3.\", \"linguagem\": \"python\", \"linhas\": [\"    contador += 1\", \"contador = 1\", \"    print(contador)\", \"while contador <= 3:\"]}",
+   "tipo": "ordenar_linhas",
+   "opcoes": null,
+   "resposta_correta": "[\"contador = 1\",\"while contador <= 3:\",\"    print(contador)\",\"    contador += 1\"]",
+   "explicacao": "A variável de controle é inicializada antes do laço; dentro dele, imprime-se o valor e só então ele é atualizado. 💡 Dica: sem a atualização o laço nunca terminaria.",
+   "categoria": "formativa",
+   "ordem": 7,
+   "id": 53
+  },
+  {
+   "unidade_id": 5,
+   "enunciado": "{\"tipo\": \"completar\", \"texto\": \"Complete o código Java que encontra o maior valor de um array (em Python seria max(numeros)).\", \"linguagem\": \"java\", \"codigo\": \"int[] numeros = {4, 8, 15};\\nint maior = numeros[0];\\nfor (int n : numeros) {\\n    if (n ___1___ maior) {\\n        maior = n;\\n    }\\n}\\nSystem.out.println(___2___);\", \"lacunas\": [[\">\", \"<\", \"==\"], [\"maior\", \"numeros\", \"n\"]]}",
+   "tipo": "completar_codigo",
+   "opcoes": null,
+   "resposta_correta": "[\">\",\"maior\"]",
+   "explicacao": "Em Java não há max() pronto neste exemplo: percorre-se o array guardando o maior valor encontrado (n > maior) e imprime-se a variável maior. 💡 Dica: a lógica é a mesma do max() do Python.",
+   "categoria": "formativa",
+   "ordem": 6,
+   "id": 54
+  },
+  {
+   "unidade_id": 5,
+   "enunciado": "{\"tipo\": \"ordenar\", \"texto\": \"Ordene as linhas do programa em C que soma os números de 1 a 4.\", \"linguagem\": \"c\", \"linhas\": [\"    printf(\\\"%d\\\", soma);\", \"}\", \"    int soma = 0;\", \"    for (int i = 1; i <= 4; i++) {\", \"#include <stdio.h>\", \"    return 0;\", \"        soma += i;\", \"int main() {\", \"    }\"]}",
+   "tipo": "ordenar_linhas",
+   "opcoes": null,
+   "resposta_correta": "[\"#include <stdio.h>\",\"int main() {\",\"    int soma = 0;\",\"    for (int i = 1; i <= 4; i++) {\",\"        soma += i;\",\"    }\",\"    printf(\\\"%d\\\", soma);\",\"    return 0;\",\"}\"]",
+   "explicacao": "Em C, o include vem primeiro, depois a função main; dentro dela declara-se a soma, faz-se o laço e imprime-se o resultado antes do return. 💡 Dica: monte de fora para dentro: include, main, corpo e fechamento.",
+   "categoria": "formativa",
+   "ordem": 7,
+   "id": 55
+  }
+ ],
+ "respostas": [],
+ "progresso": [
+  {
+   "id": 1,
+   "usuario_id": 1,
+   "unidade_id": 1,
+   "status": "em_andamento",
+   "percentual": 0,
+   "criado_em": "2026-04-21T21:19:31.864Z"
+  },
+  {
+   "id": 2,
+   "usuario_id": 1,
+   "unidade_id": 2,
+   "status": "bloqueada",
+   "percentual": 0,
+   "criado_em": "2026-04-21T21:19:31.868Z"
+  },
+  {
+   "id": 3,
+   "usuario_id": 1,
+   "unidade_id": 3,
+   "status": "bloqueada",
+   "percentual": 0,
+   "criado_em": "2026-04-21T21:19:31.870Z"
+  },
+  {
+   "id": 4,
+   "usuario_id": 1,
+   "unidade_id": 4,
+   "status": "bloqueada",
+   "percentual": 0,
+   "criado_em": "2026-04-21T21:19:31.873Z"
+  },
+  {
+   "id": 5,
+   "usuario_id": 1,
+   "unidade_id": 5,
+   "status": "bloqueada",
+   "percentual": 0,
+   "criado_em": "2026-04-21T21:19:31.875Z"
+  },
+  {
+   "id": 6,
+   "usuario_id": 2,
+   "unidade_id": 1,
+   "status": "em_andamento",
+   "percentual": 0,
+   "criado_em": "2026-04-21T21:20:32.268Z"
+  },
+  {
+   "id": 7,
+   "usuario_id": 2,
+   "unidade_id": 2,
+   "status": "bloqueada",
+   "percentual": 0,
+   "criado_em": "2026-04-21T21:20:32.271Z"
+  },
+  {
+   "id": 8,
+   "usuario_id": 2,
+   "unidade_id": 3,
+   "status": "bloqueada",
+   "percentual": 0,
+   "criado_em": "2026-04-21T21:20:32.273Z"
+  },
+  {
+   "id": 9,
+   "usuario_id": 2,
+   "unidade_id": 4,
+   "status": "bloqueada",
+   "percentual": 0,
+   "criado_em": "2026-04-21T21:20:32.275Z"
+  },
+  {
+   "id": 10,
+   "usuario_id": 2,
+   "unidade_id": 5,
+   "status": "bloqueada",
+   "percentual": 0,
+   "criado_em": "2026-04-21T21:20:32.277Z"
+  },
+  {
+   "id": 11,
+   "usuario_id": 3,
+   "unidade_id": 1,
+   "status": "bloqueada",
+   "percentual": 0,
+   "criado_em": "2026-04-22T12:04:32.275Z"
+  },
+  {
+   "id": 12,
+   "usuario_id": 3,
+   "unidade_id": 2,
+   "status": "bloqueada",
+   "percentual": 0,
+   "criado_em": "2026-04-22T12:04:32.279Z"
+  },
+  {
+   "id": 13,
+   "usuario_id": 3,
+   "unidade_id": 3,
+   "status": "bloqueada",
+   "percentual": 0,
+   "criado_em": "2026-04-22T12:04:32.281Z"
+  },
+  {
+   "id": 14,
+   "usuario_id": 3,
+   "unidade_id": 4,
+   "status": "bloqueada",
+   "percentual": 0,
+   "criado_em": "2026-04-22T12:04:32.284Z"
+  },
+  {
+   "id": 15,
+   "usuario_id": 3,
+   "unidade_id": 5,
+   "status": "bloqueada",
+   "percentual": 0,
+   "criado_em": "2026-04-22T12:04:32.286Z"
+  },
+  {
+   "id": 16,
+   "usuario_id": 4,
+   "unidade_id": 1,
+   "status": "bloqueada",
+   "percentual": 0,
+   "criado_em": "2026-04-22T17:43:01.488Z"
+  },
+  {
+   "id": 17,
+   "usuario_id": 4,
+   "unidade_id": 2,
+   "status": "bloqueada",
+   "percentual": 0,
+   "criado_em": "2026-04-22T17:43:01.490Z"
+  },
+  {
+   "id": 18,
+   "usuario_id": 4,
+   "unidade_id": 3,
+   "status": "bloqueada",
+   "percentual": 0,
+   "criado_em": "2026-04-22T17:43:01.492Z"
+  },
+  {
+   "id": 19,
+   "usuario_id": 4,
+   "unidade_id": 4,
+   "status": "bloqueada",
+   "percentual": 0,
+   "criado_em": "2026-04-22T17:43:01.494Z"
+  },
+  {
+   "id": 20,
+   "usuario_id": 4,
+   "unidade_id": 5,
+   "status": "bloqueada",
+   "percentual": 0,
+   "criado_em": "2026-04-22T17:43:01.497Z"
+  }
+ ],
+ "certificados": [],
+ "unidades": [
+  {
+   "id": 1,
+   "titulo": "Introducao a Logica de Programacao",
+   "descricao": "Fundamentos do pensamento computacional.",
+   "ordem": 1,
+   "ativa": 1
+  },
+  {
+   "id": 2,
+   "titulo": "Conceito de Variaveis",
+   "descricao": "Armazenamento de dados.",
+   "ordem": 2,
+   "ativa": 1
+  },
+  {
+   "id": 3,
+   "titulo": "Estruturas Condicionais",
+   "descricao": "Tomada de decisao no codigo.",
+   "ordem": 3,
+   "ativa": 1
+  },
+  {
+   "id": 4,
+   "titulo": "Estruturas de Repeticao",
+   "descricao": "Lacos e loops.",
+   "ordem": 4,
+   "ativa": 1
+  },
+  {
+   "id": 5,
+   "titulo": "Comparacao entre Linguagens",
+   "descricao": "Python, Java e C.",
+   "ordem": 5,
+   "ativa": 1
+  }
+ ],
+ "_ids": {
+  "conteudos": 20,
+  "exercicios": 55,
+  "usuarios": 4,
+  "progresso": 20
+ },
+ "diagnostico_respostas": [],
+ "avaliacao_final_respostas": []
+}

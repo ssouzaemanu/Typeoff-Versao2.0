@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Typeoff: estude conceitos de lógica de programação comparando Python, Java e C lado a lado, com conteúdo, comparação de código e exercícios.">
+  <title>Typeoff: Unidade</title>
+  <script src="/js/tema.js"></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mascote.css">
+  <style>
+
+    .etapas-bar {
+      display: flex; align-items: center; gap: 0;
+      background: var(--superficie);
+      border-bottom: 1px solid var(--cinza-claro);
+      padding: 0 2rem;
+      overflow-x: auto;
+    }
+    .etapa-item {
+      display: flex; align-items: center; gap: .5rem;
+      padding: .75rem 1.25rem; min-height: 48px;
+      font-family: var(--fonte-codigo);
+      font-size: .78rem; font-weight: 600;
+      color: var(--cinza-medio);
+      white-space: nowrap; position: relative;
+      background: none; border: none; cursor: pointer; border-radius: 0;
+    }
+    .etapa-item::after { content: '›'; position: absolute; right: -4px; color: var(--cinza-medio); font-size: 1.1rem; }
+    .etapa-item:last-child::after { display: none; }
+    .etapa-item.ativa { color: var(--titulo); text-decoration: underline; text-decoration-color: var(--dourado); text-decoration-thickness: 3px; text-underline-offset: 6px; }
+    .etapa-item.ativa .etapa-dot { background: var(--dourado); color: #1B2A6B; }
+    .etapa-item.concluida { color: var(--sucesso-texto); }
+    .etapa-item.concluida .etapa-dot { background: var(--sucesso-texto); color: #fff; }
+    .etapa-dot {
+      width: 24px; height: 24px;
+      background: var(--cinza-claro); color: var(--titulo);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .68rem; font-weight: 700; flex-shrink: 0;
+    }
+    .page-body.largo { max-width: 1320px; }
+    .tela > h2:first-child { outline: none; }
+
+    .tela { display: none; }
+    .tela.ativa { display: block; }
+
+    .conteudo-card {
+      background: var(--superficie); border-radius: var(--raio);
+      border: 1px solid var(--cinza-claro);
+      padding: 1.75rem; margin-bottom: 1.25rem;
+      box-shadow: var(--sombra);
+    }
+    .conteudo-card h3 {
+      font-family: var(--fonte-codigo);
+      font-size: 1.05rem; font-weight: 700;
+      color: var(--titulo);
+      margin-bottom: 1rem;
+      padding-bottom: .6rem;
+      border-bottom: 2px solid var(--dourado);
+      display: inline-block;
+    }
+    .conteudo-card p { font-size: .9rem; line-height: 1.8; color: var(--texto); margin-bottom: .75rem; }
+    .conteudo-card ul, .conteudo-card ol {
+      padding-left: 1.5rem; margin-bottom: .75rem;
+    }
+    .conteudo-card li { font-size: .88rem; line-height: 1.7; color: var(--texto); margin-bottom: .2rem; }
+    .conteudo-card pre {
+      background: var(--azul-escuro); color: var(--offwhite);
+      border-radius: var(--raio); padding: 1.25rem;
+      font-family: var(--fonte-codigo); font-size: .83rem;
+      line-height: 1.7; overflow-x: auto;
+      border-left: 3px solid var(--dourado);
+      margin: .75rem 0;
+    }
+    .conteudo-card code {
+      background: rgba(27,42,107,0.08);
+      color: var(--titulo);
+      padding: 2px 6px; border-radius: 4px;
+      font-family: var(--fonte-codigo); font-size: .85em;
+    }
+    .conteudo-card pre code { background: none; color: inherit; padding: 0; }
+
+    .quiz-container { max-width: 680px; }
+    .quiz-header { margin-bottom: 1.5rem; }
+    .quiz-prog-label {
+      font-family: var(--fonte-codigo); font-size: .75rem;
+      color: var(--cinza-medio); margin-bottom: .5rem;
+      display: flex; justify-content: space-between;
+    }
+    .quiz-question {
+      font-family: var(--fonte-codigo); font-size: .95rem;
+      font-weight: 500; color: var(--titulo);
+      line-height: 1.6; padding: 1.25rem 1.5rem;
+      background: rgba(27,42,107,0.04);
+      border-radius: var(--raio); border-left: 4px solid var(--azul-medio);
+      margin-bottom: 1.25rem;
+    }
+    .quiz-opcoes { display: flex; flex-direction: column; gap: .6rem; margin-bottom: 1.25rem; }
+    .quiz-opcao {
+      display: flex; align-items: flex-start; gap: .75rem;
+      padding: .75rem 1rem; border: 1.5px solid var(--cinza-claro);
+      border-radius: var(--raio); cursor: pointer;
+      transition: var(--transicao); font-family: var(--fonte-codigo);
+      font-size: .85rem; background: var(--superficie); text-align: left; width: 100%;
+    }
+    .quiz-opcao:hover:not(:disabled) { border-color: var(--azul-medio); background: rgba(74,111,165,0.04); }
+    .quiz-opcao.selecionada { border-color: var(--azul-medio); background: rgba(74,111,165,0.08); }
+    .quiz-opcao.correta  { border-color: var(--sucesso); background: rgba(39,174,96,0.08); color: var(--sucesso-texto); }
+    .quiz-opcao.errada   { border-color: var(--erro);    background: rgba(192,57,43,0.08);  color: var(--erro); }
+    .opcao-letra {
+      font-family: var(--fonte-codigo); font-size: .72rem;
+      color: var(--cinza-medio); min-width: 20px; flex-shrink: 0; font-weight: 700;
+    }
+    .feedback-box {
+      padding: 1rem 1.25rem; border-radius: var(--raio);
+      font-family: var(--fonte-codigo); font-size: .84rem;
+      margin-bottom: 1rem; border-left: 4px solid; line-height: 1.65;
+    }
+    .feedback-correto { background: rgba(39,174,96,0.08); border-color: var(--sucesso); color: var(--fb-ok); }
+    .feedback-errado  { background: rgba(192,57,43,0.08); border-color: var(--erro);    color: var(--fb-err); }
+    .feedback-dica    { background: rgba(201,169,110,0.1); border-color: var(--dourado); color: var(--fb-info); margin-top: .5rem; }
+
+    .resultado-box { text-align: center; padding: 2.5rem 1.5rem; }
+    .resultado-score {
+      font-family: var(--fonte-codigo); font-size: 4rem; font-weight: 700; line-height: 1;
+    }
+    .resultado-score.aprovado  { color: var(--sucesso-texto); }
+    .resultado-score.reprovado { color: var(--erro); }
+    .resultado-msg { font-family: var(--fonte-codigo); font-size: .9rem; margin: .75rem 0 1.5rem; }
+    .resultado-acoes { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+    .flow-btn-area {
+      margin-top: 2.5rem; padding-top: 1.5rem;
+      border-top: 1px solid var(--cinza-claro);
+      display: flex; justify-content: flex-end;
+    }
+
+    .edit-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.55);
+      z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .edit-overlay.aberto { display: flex; }
+    .edit-modal {
+      background: var(--superficie); border-radius: 10px; padding: 1.75rem;
+      width: 100%; max-width: 680px; max-height: 92vh; overflow-y: auto;
+      box-shadow: 0 20px 50px rgba(0,0,0,.3);
+      animation: modalIn .2s ease;
+    }
+    @keyframes modalIn { from{transform:scale(.95) translateY(10px);opacity:0} to{transform:scale(1) translateY(0);opacity:1} }
+    .edit-modal h3 { font-family: var(--fonte-codigo); font-size: 1rem; color: var(--titulo); margin-bottom: 1.25rem; }
+    .edit-hint { font-family: var(--fonte-codigo); font-size: .72rem; color: var(--cinza-medio); margin-bottom: .35rem; }
+    .btn-editar-flutuante {
+      position: fixed; bottom: 1.5rem; right: 6rem;
+      background: var(--azul-escuro); color: var(--dourado);
+      border: none; border-radius: 50px;
+      padding: .6rem 1.25rem;
+      font-family: var(--fonte-codigo); font-size: .78rem; font-weight: 700;
+      cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,.25);
+      transition: var(--transicao); z-index: 200;
+    }
+    .btn-editar-flutuante:hover { background: var(--azul-medio); transform: translateY(-2px); }
+
+  </style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-content">
+
+    <header class="topbar">
+      <div>
+        <h1 class="topbar-title" id="topbar-titulo">Carregando...</h1>
+        <div class="topbar-breadcrumb"><span id="breadcrumb-u">..</span></div>
+      </div>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="window.location.href='/dashboard.html'">Voltar</button>
+    </header>
+
+    <nav class="etapas-bar" id="etapas-bar" aria-label="Etapas da unidade">
+      <button type="button" class="etapa-item" id="etapa-conteudo" onclick="irParaEtapa('conteudo')">
+        <span class="etapa-dot" id="dot-conteudo" aria-hidden="true">1</span> Conteúdo
+      </button>
+      <button type="button" class="etapa-item" id="etapa-comparacao" onclick="irParaEtapa('comparacao')">
+        <span class="etapa-dot" id="dot-comparacao" aria-hidden="true">2</span> Comparação
+      </button>
+      <button type="button" class="etapa-item" id="etapa-exercicios" onclick="irParaEtapa('exercicios')">
+        <span class="etapa-dot" id="dot-exercicios" aria-hidden="true">3</span> Exercícios
+      </button>
+    </nav>
+
+    <main class="page-body largo" id="conteudo-principal" tabindex="-1">
+
+      <section class="tela ativa" id="tela-conteudo" aria-labelledby="h-conteudo">
+        <h2 class="secao-tela-titulo" id="h-conteudo" tabindex="-1">Conteúdo</h2>
+        <div id="objetivos-wrap"></div>
+        <p class="etapa-meta" id="meta-conteudo"></p>
+        <div id="conteudo-lista">
+          <div class="empty-state">
+            <div class="empty-icon" aria-hidden="true">📖</div>
+            <div class="empty-title">Conteúdo sendo elaborado</div>
+            <div class="empty-text">O professor ainda está preparando este material.</div>
+          </div>
+        </div>
+        <div id="visual-wrap"></div>
+        <div id="referencias-wrap"></div>
+        <div class="flow-btn-area">
+          <button type="button" class="btn btn-primary" onclick="irParaEtapa('comparacao')">
+            Ver comparação de código →
+          </button>
+        </div>
+      </section>
+
+      <section class="tela" id="tela-comparacao" aria-labelledby="h-comparacao">
+        <h2 class="secao-tela-titulo" id="h-comparacao" tabindex="-1">Comparação entre linguagens</h2>
+        <p class="etapa-meta" id="meta-comparacao"></p>
+        <details class="dica" id="comp-intro-geral">
+          <summary>Como ler esta comparação</summary>
+          <div class="dica-corpo">
+            <ul>
+              <li>Leia a introdução e o quadro <strong>“O que observar”</strong> antes dos códigos.</li>
+              <li>Os trechos <strong>realçados</strong> mudam de uma linguagem para outra (a sintaxe).</li>
+              <li>O que não está realçado <strong>permanece</strong>: a lógica do algoritmo.</li>
+            </ul>
+          </div>
+        </details>
+        <div id="comparacao-lista">
+          <div class="empty-state">
+            <div class="empty-icon" aria-hidden="true">⇄</div>
+            <div class="empty-title">Comparações sendo elaboradas</div>
+            <div class="empty-text">Os exemplos em Python, Java e C ainda estão sendo preparados.</div>
+          </div>
+        </div>
+        <div class="flow-btn-area" style="justify-content:space-between">
+          <button type="button" class="btn btn-secondary" onclick="irParaEtapa('conteudo')">Voltar ao conteúdo</button>
+          <button type="button" class="btn btn-primary"   onclick="irParaEtapa('exercicios')">Ir para os exercícios →</button>
+        </div>
+      </section>
+
+      <section class="tela" id="tela-exercicios" aria-labelledby="h-exercicios">
+        <h2 class="secao-tela-titulo" id="h-exercicios" tabindex="-1">Exercícios</h2>
+        <p class="etapa-meta" id="meta-exercicios"></p>
+        <div id="exercicios-wrap">
+          <div class="empty-state">
+            <div class="empty-icon" aria-hidden="true">✏️</div>
+            <div class="empty-title">Exercícios sendo elaborados</div>
+            <div class="empty-text">Volte em breve para praticar!</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<div class="edit-overlay" id="edit-overlay">
+  <div class="edit-modal" role="dialog" aria-modal="true" aria-labelledby="edit-modal-titulo">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+      <h2 id="edit-modal-titulo" style="font-size:1rem">Editar conteúdo</h2>
+      <button type="button" aria-label="Fechar janela de edição" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--cinza-medio);min-width:44px;min-height:44px" onclick="fecharEditor()">✕</button>
+    </div>
+    <div id="edit-form-area"></div>
+    <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.25rem">
+      <button type="button" class="btn btn-secondary" onclick="fecharEditor()">Cancelar</button>
+      <button type="button" class="btn btn-primary"   id="edit-salvar-btn" onclick="salvarEdicao()">Salvar alterações</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+<script src="/js/complemento.js"></script>
+<script src="/js/unidade.js"></script>
+<script src="/js/mascote.js" defer></script>
+</body>
+</html>

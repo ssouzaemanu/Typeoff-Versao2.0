@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Typeoff: painel do professor com desempenho da turma, telemetria de uso e gestão do conteúdo.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typeoff — Painel do Professor</title>
+  <script src="/js/tema.js"></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/mascote.css">
+  <style>
+
+    .aluno-row { cursor:pointer; }
+    .aluno-row:hover td { background: rgba(74,111,165,0.04); }
+    .cert-tag {
+      font-family:var(--fonte-codigo);font-size:0.68rem;font-weight:700;
+      background:rgba(39,174,96,0.12);color:var(--sucesso-texto);
+      padding:2px 8px;border-radius:20px;
+    }
+
+    .prog-item {
+      display:flex;align-items:center;gap:0.75rem;
+      padding:0.5rem 0;border-bottom:1px solid var(--cinza-claro);
+    }
+    .prog-item:last-child{border-bottom:none;}
+    .prog-nome{flex:1;font-family:var(--fonte-codigo);font-size:0.82rem;color:var(--titulo);}
+    .prog-pct{font-family:var(--fonte-codigo);font-size:0.8rem;font-weight:700;color:var(--titulo);width:38px;text-align:right;}
+    .prog-mini-bar{flex:1;background:var(--cinza-claro);height:5px;border-radius:10px;overflow:hidden;}
+    .prog-mini-fill{height:100%;background:linear-gradient(90deg,var(--azul-medio),var(--dourado));border-radius:10px;}
+
+    .painel-tabs {
+      display:flex;gap:0;border-bottom:2px solid var(--cinza-claro);margin-bottom:1.5rem;
+    }
+    .painel-tab {
+      padding:0.65rem 1.4rem;background:none;border:none;
+      font-family:var(--fonte-codigo);font-size:0.82rem;font-weight:600;
+      color:var(--cinza-medio);cursor:pointer;
+      border-bottom:2px solid transparent;margin-bottom:-2px;
+      transition:var(--transicao);
+    }
+    .painel-tab.active { color:var(--titulo); border-bottom-color:var(--dourado); }
+    .painel-panel { display:none; }
+    .painel-panel.active { display:block; }
+
+    .versao-card {
+      display:flex;align-items:center;justify-content:space-between;
+      padding:1rem 1.25rem;
+      border:1px solid var(--cinza-claro);
+      border-radius:var(--raio);
+      background:var(--superficie);
+      margin-bottom:0.75rem;
+      transition:var(--transicao);
+    }
+    .versao-card:hover { box-shadow:var(--sombra); }
+    .versao-card.ativa {
+      border-color:var(--dourado);
+      background:rgba(201,169,110,0.05);
+    }
+    .versao-num {
+      font-family:var(--fonte-codigo);font-size:1rem;font-weight:700;
+      color:var(--titulo);
+    }
+    .versao-data {
+      font-family:var(--fonte-codigo);font-size:0.75rem;color:var(--cinza-medio);
+      margin-top:0.2rem;
+    }
+    .versao-badge {
+      font-family:var(--fonte-codigo);font-size:0.68rem;font-weight:700;
+      padding:3px 10px;border-radius:20px;
+    }
+    .versao-badge.ativa { background:rgba(201,169,110,0.2);color:var(--fb-info); }
+    .versao-badge.anterior { background:rgba(154,149,144,0.15);color:var(--cinza-medio); }
+
+    .nova-versao-box {
+      border:2px dashed var(--cinza-claro);
+      border-radius:var(--raio);
+      padding:1.5rem;
+      text-align:center;
+      margin-top:1rem;
+      transition:var(--transicao);
+    }
+    .nova-versao-box:hover { border-color:var(--azul-medio); }
+    .nova-versao-titulo {
+      font-family:var(--fonte-codigo);font-size:0.88rem;font-weight:700;
+      color:var(--titulo);margin-bottom:0.5rem;
+    }
+    .nova-versao-sub {
+      font-family:var(--fonte-codigo);font-size:0.75rem;
+      color:var(--cinza-medio);margin-bottom:1rem;
+    }
+
+    .changelog-item {
+      padding:0.75rem 1rem;border-left:3px solid var(--cinza-claro);
+      margin-bottom:0.75rem;background:var(--superficie);border-radius:0 var(--raio) var(--raio) 0;
+      font-family:var(--fonte-codigo);font-size:0.82rem;
+      color:var(--titulo);line-height:1.6;
+    }
+    .changelog-item.ativa { border-left-color:var(--dourado); }
+    .changelog-meta {
+      font-size:0.7rem;color:var(--cinza-medio);margin-bottom:0.25rem;
+    }
+
+    .readonly-banner {
+      display:flex;align-items:center;gap:0.75rem;
+      background:rgba(27,42,107,0.04);
+      border:1px solid rgba(27,42,107,0.1);
+      border-radius:var(--raio);
+      padding:0.875rem 1.25rem;
+      margin-bottom:1.5rem;
+    }
+    .readonly-icon { font-size:1.1rem;flex-shrink:0; }
+    .readonly-text {
+      font-family:var(--fonte-codigo);font-size:0.8rem;
+      color:var(--titulo);line-height:1.5;
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-content">
+
+    <header class="topbar">
+      <div>
+        <h1 class="topbar-title">Painel do Professor</h1>
+        <div class="topbar-breadcrumb">Visão geral da turma</div>
+      </div>
+    </header>
+
+    <main class="page-body" id="conteudo-principal" tabindex="-1">
+
+      <div class="stats-grid mb-3">
+        <div class="stat-card"><div class="stat-numero" id="stat-alunos">—</div><div class="stat-label">Estudantes</div></div>
+        <div class="stat-card"><div class="stat-numero" id="stat-media">—%</div><div class="stat-label">Média geral</div></div>
+        <div class="stat-card"><div class="stat-numero" id="stat-cert">—</div><div class="stat-label">Certificados emitidos</div></div>
+        <div class="stat-card"><div class="stat-numero" id="stat-aprovados">—</div><div class="stat-label">Aprovados (≥80%)</div></div>
+      </div>
+
+      <div class="painel-tabs" role="tablist" aria-label="Seções do painel">
+        <button type="button" role="tab" id="tab-alunos" aria-selected="true" aria-controls="panel-alunos" class="painel-tab active" onclick="trocarAba('alunos')"><span aria-hidden="true">👥</span> Estudantes</button>
+        <button type="button" role="tab" id="tab-telemetria" aria-selected="false" aria-controls="panel-telemetria" class="painel-tab" onclick="trocarAba('telemetria')"><span aria-hidden="true">📈</span> Desempenho e uso</button>
+        <button type="button" role="tab" id="tab-versoes" aria-selected="false" aria-controls="panel-versoes" class="painel-tab" onclick="trocarAba('versoes')"><span aria-hidden="true">📦</span> Versões do Conteúdo</button>
+        <button type="button" role="tab" id="tab-exercicios" aria-selected="false" aria-controls="panel-exercicios" class="painel-tab" onclick="trocarAba('exercicios')"><span aria-hidden="true">✏️</span> Exercícios</button>
+      </div>
+
+      <div class="painel-panel active" id="panel-alunos" role="tabpanel" aria-labelledby="tab-alunos">
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+            <h2 style="margin:0;font-size:1.05rem">Estudantes cadastrados</h2>
+            <label for="busca" class="sr-only">Buscar estudante por nome ou e-mail</label>
+            <input type="text" id="busca" placeholder="Buscar por nome..."
+              style="width:200px;padding:0.4rem 0.75rem;font-size:0.82rem"
+              oninput="filtrarTabela()">
+          </div>
+          <div class="table-wrap">
+            <table>
+              <caption class="sr-only">Estudantes cadastrados e seu desempenho. Selecione uma linha para ver os detalhes.</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Nome</th><th scope="col">E-mail</th><th scope="col">Questões</th><th scope="col">Acertos</th>
+                  <th scope="col">Desempenho</th><th scope="col">Unid. concluídas</th><th scope="col">Certificado</th>
+                </tr>
+              </thead>
+              <tbody id="tabela-estudantes"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="painel-panel" id="panel-telemetria" role="tabpanel" aria-labelledby="tab-telemetria">
+        <div class="card mb-3">
+          <h2 style="font-size:1.05rem;margin-bottom:.4rem">Desempenho e uso por unidade, aba e questão</h2>
+          <details class="dica"><summary>Como ler</summary><div class="dica-corpo"><p class="tele-aviso">Os tempos e as tentativas só existem para atividades realizadas <strong>depois</strong> da atualização do sistema; as respostas anteriores contam apenas acertos e erros. Contas de teste ficam fora das médias por padrão.</p></div></details>
+          <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem">
+            <label style="display:inline-flex;align-items:center;gap:.5rem;margin:0;text-transform:none;letter-spacing:0;font-size:.8rem;cursor:pointer">
+              <input type="checkbox" id="tele-incluir-teste" style="width:18px;height:18px" onchange="carregarTelemetria()"> Incluir contas de teste nos cálculos
+            </label>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="carregarTelemetria()">↻ Atualizar</button>
+          </div>
+          <div id="tele-resumo" class="tele-grid" aria-live="polite"></div>
+        </div>
+        <div class="card mb-3">
+          <h3 style="font-size:.95rem;margin-bottom:.75rem">Por unidade</h3>
+          <div class="table-wrap"><table class="tele-tabela">
+            <caption class="sr-only">Desempenho e tempo de uso por unidade</caption>
+            <thead><tr><th scope="col">Unidade</th><th scope="col">Estudantes</th><th scope="col">Respostas</th><th scope="col">Acerto</th><th scope="col">Tempo: conteúdo</th><th scope="col">Tempo: comparação</th><th scope="col">Tempo: exercícios</th><th scope="col">Tentativas (média)</th><th scope="col">Tempo por tentativa</th><th scope="col">Concluíram</th></tr></thead>
+            <tbody id="tele-unidades"></tbody></table></div>
+        </div>
+        <div class="card mb-3">
+          <h3 style="font-size:.95rem;margin-bottom:.4rem">Por questão (menor taxa de acerto primeiro)</h3>
+          <details class="dica"><summary>Como ler</summary><div class="dica-corpo"><p class="tele-aviso">Alertas ajudam a separar dificuldade real de ruído de conteúdo: enunciado provisório, repetição e taxa muito baixa merecem revisão do enunciado antes de qualquer conclusão sobre aprendizagem.</p></div></details>
+          <div class="table-wrap"><table class="tele-tabela">
+            <caption class="sr-only">Taxa de acerto, tempo médio e alertas por questão</caption>
+            <thead><tr><th scope="col">Unid.</th><th scope="col">Questão</th><th scope="col">Respostas</th><th scope="col">Acerto</th><th scope="col">Tempo médio</th><th scope="col">Tentativa (média)</th><th scope="col">Alertas</th></tr></thead>
+            <tbody id="tele-questoes"></tbody></table></div>
+        </div>
+        <div class="card">
+          <h3 style="font-size:.95rem;margin-bottom:.4rem">Contas de teste e atividade por estudante</h3>
+          <details class="dica"><summary>Como ler</summary><div class="dica-corpo"><p class="tele-aviso">Marque as contas usadas para testes do sistema para excluí-las dos relatórios. “Sugerida” indica nome ou e-mail com “teste”, “test” ou “demo”.</p></div></details>
+          <div class="table-wrap"><table class="tele-tabela">
+            <caption class="sr-only">Atividade por estudante e marcação de contas de teste</caption>
+            <thead><tr><th scope="col">Estudante</th><th scope="col">Respostas</th><th scope="col">Acerto</th><th scope="col">Diagnóstico</th><th scope="col">Exercícios</th><th scope="col">Av. final</th><th scope="col">Tempo de uso</th><th scope="col">Unid. concluídas</th><th scope="col">Última atividade</th><th scope="col">Conta de teste</th></tr></thead>
+            <tbody id="tele-alunos"></tbody></table></div>
+        </div>
+      </div>
+
+      <div class="painel-panel" id="panel-versoes" role="tabpanel" aria-labelledby="tab-versoes">
+
+        <div class="readonly-banner">
+          <div class="readonly-icon">🔒</div>
+          <div class="readonly-text">
+            <strong>Conteúdo protegido.</strong> As versões publicadas são somente leitura — o histórico de aprendizado dos alunos fica preservado.
+            Para atualizar o curso, crie uma nova versão abaixo. Use <a href="/gerenciar.html" style="color:var(--azul-texto)">Gerenciar Exercícios</a> para editar questões.
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <h2 class="mb-3" style="font-size:0.95rem">Versões publicadas</h2>
+          <div id="lista-versoes">
+            <div style="font-family:var(--fonte-codigo);font-size:0.82rem;color:var(--cinza-medio);padding:1rem;text-align:center">
+              Carregando versões...
+            </div>
+          </div>
+
+          <div class="nova-versao-box" id="nova-versao-box">
+            <div class="nova-versao-titulo">+ Publicar nova versão</div>
+            <div class="nova-versao-sub">A versão atual permanece acessível para alunos já matriculados</div>
+            <div style="display:flex;flex-direction:column;gap:0.75rem;max-width:400px;margin:0 auto">
+              <input type="text" id="nova-versao-num" aria-label="Número da nova versão" placeholder="Ex: 0.2, 1.0, 2024-A..."
+                style="text-align:center;font-family:var(--fonte-codigo);font-size:0.88rem">
+              <textarea id="nova-versao-notas" aria-label="Notas da nova versão" rows="2"
+                placeholder="Notas desta versão (o que mudou?)"
+                style="font-family:var(--fonte-codigo);font-size:0.82rem;resize:vertical"></textarea>
+              <button class="btn btn-primary" onclick="publicarVersao()">
+                ✦ Publicar versão
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="mb-3" style="font-size:0.95rem">Histórico de alterações</h2>
+          <div id="changelog-lista">
+            <div style="font-family:var(--fonte-codigo);font-size:0.82rem;color:var(--cinza-medio);padding:1rem;text-align:center">
+              Nenhuma versão publicada ainda.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="painel-panel" id="panel-exercicios" role="tabpanel" aria-labelledby="tab-exercicios">
+        <div class="readonly-banner">
+          <div class="readonly-icon">✏️</div>
+          <div class="readonly-text">
+            Gerencie as questões das unidades, diagnóstico e avaliação final.
+            Esta área não altera versões de conteúdo — é independente do versionamento.
+          </div>
+        </div>
+        <div style="text-align:center;padding:2rem">
+          <div style="font-size:2.5rem;margin-bottom:1rem">⚙️</div>
+          <div style="font-family:var(--fonte-codigo);font-size:1rem;font-weight:700;color:var(--titulo);margin-bottom:0.5rem">
+            Gerenciamento de Exercícios
+          </div>
+          <div style="font-family:var(--fonte-codigo);font-size:0.82rem;color:var(--cinza-medio);margin-bottom:1.5rem;line-height:1.6">
+            Adicione, edite e organize questões das unidades,<br>
+            diagnóstico inicial e avaliação final.
+          </div>
+          <a href="/gerenciar.html" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:0.5rem">
+            → Abrir Gerenciador de Exercícios
+          </a>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-aluno">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-header">
+      <h3 id="modal-nome-aluno">—</h3>
+      <button class="modal-close" onclick="fecharModal('modal-aluno')">✕</button>
+    </div>
+    <div id="modal-corpo-aluno"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-versao-ok">
+  <div class="modal" style="max-width:420px;text-align:center">
+    <div style="font-size:2.5rem;margin-bottom:0.75rem">✦</div>
+    <h3 style="margin-bottom:0.5rem">Versão publicada!</h3>
+    <p style="font-family:var(--fonte-codigo);font-size:0.82rem;color:var(--cinza-medio);margin-bottom:1.5rem;line-height:1.6"
+       id="modal-versao-msg"></p>
+    <button class="btn btn-primary w-full" onclick="fecharModal('modal-versao-ok')">Fechar</button>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+<script>
+  let todosEstudantes = [];
+  let telemetriaCarregada = false;
+
+  const VERSOES_KEY = 'typeoff_versoes_conteudo';
+
+  function lerVersoes() {
+    try {
+      const raw = localStorage.getItem(VERSOES_KEY);
+      return raw ? JSON.parse(raw) : getVersoesDefault();
+    } catch(e) {
+      return getVersoesDefault();
+    }
+  }
+
+  function getVersoesDefault() {
+    return [
+      {
+        num: '0.1',
+        data: new Date().toISOString(),
+        notas: 'Versão inicial do curso — 5 unidades, diagnóstico e avaliação final.',
+        ativa: true
+      }
+    ];
+  }
+
+  function salvarVersoes(versoes) {
+    localStorage.setItem(VERSOES_KEY, JSON.stringify(versoes));
+  }
+
+  async function iniciar() {
+    const usuario = await verificarLogin('professor');
+    if (!usuario) return;
+    renderizarSidebar(usuario, [], 'professor');
+
+    const res = await fetch('/api/professor/estudantes').then(r=>r.json());
+    if (res.sucesso) {
+      todosEstudantes = res.estudantes;
+      renderizarTabela(todosEstudantes);
+    }
+
+    renderizarVersoes();
+  }
+
+  function trocarAba(nome) {
+    const ordem = ['alunos','telemetria','versoes','exercicios'];
+    document.querySelectorAll('.painel-tab').forEach((b,i) => {
+      const ativo = ordem[i] === nome;
+      b.classList.toggle('active', ativo);
+      b.setAttribute('aria-selected', ativo ? 'true' : 'false');
+      b.setAttribute('tabindex', ativo ? '0' : '-1');
+    });
+    document.querySelectorAll('.painel-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + nome).classList.add('active');
+    if (nome === 'telemetria' && !telemetriaCarregada) carregarTelemetria();
+  }
+
+  document.addEventListener('keydown', function (e) {
+    const t = e.target;
+    if (!t.classList || !t.classList.contains('painel-tab')) return;
+    const abas = Array.from(document.querySelectorAll('.painel-tab'));
+    let i = abas.indexOf(t);
+    if (e.key === 'ArrowRight') i = (i + 1) % abas.length;
+    else if (e.key === 'ArrowLeft') i = (i - 1 + abas.length) % abas.length;
+    else return;
+    e.preventDefault(); abas[i].focus(); abas[i].click();
+  });
+
+  function renderizarTabela(lista) {
+    const tbody = document.getElementById('tabela-estudantes');
+    document.getElementById('stat-alunos').textContent    = lista.length;
+    const comRespostas = lista.filter(e => e.exercicios_feitos > 0);
+    const mediaGeral   = comRespostas.length > 0
+      ? Math.round(comRespostas.reduce((s,e) => s+e.percentual, 0) / comRespostas.length) : 0;
+    document.getElementById('stat-media').textContent     = mediaGeral + '%';
+    document.getElementById('stat-cert').textContent      = lista.filter(e => e.certificado).length;
+    document.getElementById('stat-aprovados').textContent = lista.filter(e => e.percentual >= 80).length;
+
+    if (!lista.length) {
+      tbody.innerHTML = '<tr><td colspan="7" style="padding:2rem;text-align:center;font-family:var(--fonte-codigo);color:var(--cinza-medio)">Nenhum estudante cadastrado.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = lista.map(e => {
+      const corPct = e.percentual >= 80 ? 'var(--sucesso-texto)' : e.percentual >= 60 ? 'var(--aviso)' : 'var(--erro-texto)';
+      return `<tr class="aluno-row" data-id="${e.id}" data-nome="${escHtml(e.nome)}">
+        <td><strong>${escHtml(e.nome)}</strong></td>
+        <td>${escHtml(e.email)}</td>
+        <td>${e.exercicios_feitos||0}</td>
+        <td>${e.acertos||0}</td>
+        <td style="font-family:var(--fonte-codigo);font-weight:700;color:${corPct}">${e.percentual}%</td>
+        <td>${e.unidades_concluidas||0}</td>
+        <td>${e.certificado
+          ? '<span class="cert-tag">✓ Emitido</span>'
+          : '<span style="color:var(--cinza-medio);font-size:0.78rem;font-family:var(--fonte-codigo)">—</span>'}</td>
+      </tr>`;
+    }).join('');
+    tbody.querySelectorAll('.aluno-row').forEach(tr => tornarAcionavel(tr, () => verAluno(parseInt(tr.dataset.id,10)), 'Ver detalhes de ' + tr.dataset.nome));
+  }
+
+  function filtrarTabela() {
+    const q = document.getElementById('busca').value.toLowerCase();
+    renderizarTabela(q
+      ? todosEstudantes.filter(e => e.nome.toLowerCase().includes(q) || e.email.toLowerCase().includes(q))
+      : todosEstudantes
+    );
+  }
+
+  async function verAluno(id) {
+    const res = await fetch(`/api/professor/estudante?id=${id}`).then(r=>r.json());
+    if (!res.sucesso) return;
+    const e = res.estudante;
+    document.getElementById('modal-nome-aluno').textContent = e.nome;
+
+    const corGeral = e.percentual_geral >= 80 ? 'var(--sucesso-texto)'
+      : e.percentual_geral >= 60 ? 'var(--aviso)' : 'var(--erro-texto)';
+
+    document.getElementById('modal-corpo-aluno').innerHTML = `
+      <div class="stats-grid mb-3" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat-card">
+          <div class="stat-numero" style="font-size:1.5rem;color:${corGeral}">${e.percentual_geral}%</div>
+          <div class="stat-label">Desempenho geral</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-numero" style="font-size:1.5rem">${e.total_acertos}</div>
+          <div class="stat-label">Acertos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-numero" style="font-size:1.5rem">${e.total_respostas}</div>
+          <div class="stat-label">Questões feitas</div>
+        </div>
+      </div>
+      <div style="font-family:var(--fonte-codigo);font-size:0.72rem;text-transform:uppercase;
+                  letter-spacing:0.1em;color:var(--cinza-medio);margin-bottom:0.75rem">
+        Progresso por unidade
+      </div>
+      ${e.progresso.map(u => {
+        const cor = u.status === 'concluida' ? 'var(--sucesso-texto)'
+          : u.status === 'em_andamento' ? 'var(--dourado)' : 'var(--cinza-medio)';
+        const titulo = escHtml(u.titulo.length > 30 ? u.titulo.substring(0,30)+'…' : u.titulo);
+        const statusLbl = {concluida:'Concluída',em_andamento:'Em andamento',bloqueada:'Bloqueada'};
+        return `<div class="prog-item">
+          <div class="prog-nome">U${u.ordem}. ${titulo}</div>
+          <div class="prog-mini-bar">
+            <div class="prog-mini-fill" style="width:${u.percentual}%"></div>
+          </div>
+          <div class="prog-pct" style="color:${cor}">${Math.round(u.percentual)}%</div>
+          <span class="badge badge-${u.status==='em_andamento'?'andamento':u.status}">
+            ${statusLbl[u.status]||u.status}
+          </span>
+        </div>`;
+      }).join('')}
+      ${e.certificado ? `
+        <div style="margin-top:1rem;padding:0.75rem 1rem;background:rgba(39,174,96,0.08);
+             border-radius:var(--raio);border-left:3px solid var(--sucesso);
+             font-family:var(--fonte-codigo);font-size:0.82rem;color:var(--fb-ok)">
+          ✓ Certificado emitido em ${formatarData(e.certificado.criado_em)}
+          — Código: ${escHtml(e.certificado.codigo)}
+        </div>` : ''}
+    `;
+    abrirModal('modal-aluno');
+  }
+
+  function renderizarVersoes() {
+    const versoes = lerVersoes();
+    const lista   = document.getElementById('lista-versoes');
+    const changelog = document.getElementById('changelog-lista');
+
+    if (!versoes.length) {
+      lista.innerHTML = '<div style="font-family:var(--fonte-codigo);font-size:0.82rem;color:var(--cinza-medio);padding:1rem;text-align:center">Nenhuma versão publicada.</div>';
+      changelog.innerHTML = '<div style="font-family:var(--fonte-codigo);font-size:0.82rem;color:var(--cinza-medio);padding:1rem;text-align:center">Nenhuma versão publicada ainda.</div>';
+      return;
+    }
+
+    const ordenadas = [...versoes].reverse();
+    lista.innerHTML = ordenadas.map(v => `
+      <div class="versao-card ${v.ativa ? 'ativa' : ''}">
+        <div>
+          <div class="versao-num">Versão do Conteúdo ${v.num}</div>
+          <div class="versao-data">Publicada em ${formatarDataISO(v.data)}</div>
+        </div>
+        <span class="versao-badge ${v.ativa ? 'ativa' : 'anterior'}">
+          ${v.ativa ? '✦ Ativa' : 'Anterior'}
+        </span>
+      </div>`).join('');
+
+    changelog.innerHTML = ordenadas.map(v => `
+      <div class="changelog-item ${v.ativa ? 'ativa' : ''}">
+        <div class="changelog-meta">
+          Versão ${v.num} — ${formatarDataISO(v.data)}
+          ${v.ativa ? ' <strong style="color:var(--dourado-texto)">← atual</strong>' : ''}
+        </div>
+        <div>${v.notas || '—'}</div>
+      </div>`).join('');
+  }
+
+  async function publicarVersao() {
+    const num   = document.getElementById('nova-versao-num').value.trim();
+    const notas = document.getElementById('nova-versao-notas').value.trim();
+
+    if (!num) {
+      mostrarToast('Informe o número da versão (ex: 0.2).', 'erro');
+      return;
+    }
+
+    const versoes = lerVersoes();
+
+    if (versoes.some(v => v.num === num)) {
+      mostrarToast(`Versão ${num} já existe.`, 'erro');
+      return;
+    }
+
+    versoes.forEach(v => v.ativa = false);
+
+    versoes.push({
+      num,
+      data: new Date().toISOString(),
+      notas: notas || 'Sem notas de versão.',
+      ativa: true
+    });
+
+    salvarVersoes(versoes);
+
+    document.getElementById('nova-versao-num').value   = '';
+    document.getElementById('nova-versao-notas').value = '';
+
+    document.getElementById('modal-versao-msg').textContent =
+      `"Versão do Conteúdo ${num}" foi publicada e está ativa. A versão anterior continua acessível no histórico.`;
+    abrirModal('modal-versao-ok');
+
+    renderizarVersoes();
+  }
+
+  function formatarDataISO(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    return d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric' });
+  }
+
+  function fmtTempo(ms) {
+    if (ms == null) return '—';
+    const s = Math.round(ms / 1000);
+    if (s < 60) return s + ' s';
+    const m = Math.floor(s / 60), r = s % 60;
+    return m + ' min' + (r ? ' ' + r + ' s' : '');
+  }
+  const fmtPct = v => v == null ? '—' : v + '%';
+
+  async function carregarTelemetria() {
+    const incluir = document.getElementById('tele-incluir-teste').checked ? '1' : '0';
+    let r;
+    try { r = await fetch('/api/professor/analytics?incluir_teste=' + incluir).then(x => x.json()); }
+    catch (e) { mostrarToast('Não foi possível carregar os dados de desempenho.', 'erro'); return; }
+    if (!r || !r.sucesso) { mostrarToast('Não foi possível carregar os dados de desempenho.', 'erro'); return; }
+    telemetriaCarregada = true;
+    const s = r.resumo;
+    document.getElementById('tele-resumo').innerHTML = [
+      [s.estudantes_considerados, 'Estudantes considerados'],
+      [s.respostas, 'Respostas nas unidades'],
+      [fmtPct(s.taxa), 'Taxa de acerto geral'],
+      [s.respostas_com_telemetria, 'Respostas com tempo e tentativa'],
+      [s.eventos_telemetria, 'Eventos de uso registrados'],
+      [fmtTempo(s.tempo_medio_diagnostico_ms), 'Tempo médio no diagnóstico'],
+      [fmtTempo(s.tempo_medio_avaliacao_final_ms), 'Tempo médio na avaliação final'],
+      [s.contas_teste + (s.contas_teste_sugeridas ? ' (+' + s.contas_teste_sugeridas + ' sugeridas)' : ''), 'Contas de teste']
+    ].map(p => `<div class="stat-card"><div class="stat-numero" style="font-size:1.4rem">${p[0]}</div><div class="stat-label">${p[1]}</div></div>`).join('');
+
+    document.getElementById('tele-unidades').innerHTML = r.unidades.map(u => `<tr>
+      <td>U${u.ordem}. ${escHtml(u.titulo)}</td><td>${u.estudantes_ativos}</td><td>${u.respostas}</td><td>${fmtPct(u.taxa)}</td>
+      <td>${fmtTempo(u.tempo_ms.conteudo)}</td><td>${fmtTempo(u.tempo_ms.comparacao)}</td><td>${fmtTempo(u.tempo_ms.exercicios)}</td>
+      <td>${u.tentativas_media == null ? '—' : u.tentativas_media}</td><td>${fmtTempo(u.tempo_tentativa_medio_ms)}</td><td>${u.concluidas}</td></tr>`).join('') || '<tr><td colspan="10">Sem dados.</td></tr>';
+
+    const qs = r.questoes.slice().sort((a, b) => ((a.taxa == null ? 999 : a.taxa) - (b.taxa == null ? 999 : b.taxa)) || (a.unidade_ordem - b.unidade_ordem));
+    document.getElementById('tele-questoes').innerHTML = qs.map(q => `<tr>
+      <td>U${q.unidade_ordem || '?'}</td><td style="white-space:normal;min-width:240px">#${q.exercicio_id} ${escHtml(q.resumo)}</td><td>${q.respostas}</td>
+      <td class="${q.taxa != null && q.taxa < 40 ? 'cel-alerta' : ''}">${fmtPct(q.taxa)}</td><td>${fmtTempo(q.tempo_medio_ms)}</td>
+      <td>${q.tentativa_media == null ? '—' : q.tentativa_media}</td>
+      <td style="white-space:normal;min-width:200px">${q.alertas.length ? q.alertas.map(a => `<span class="tag-teste">${escHtml(a)}</span>`).join(' ') : '—'}</td></tr>`).join('') || '<tr><td colspan="7">Sem questões.</td></tr>';
+
+    document.getElementById('tele-alunos').innerHTML = r.alunos.map(a => `<tr>
+      <td>${escHtml(a.nome)}${a.conta_teste ? '<span class="tag-teste">teste</span>' : (a.teste_sugerido ? '<span class="tag-teste">sugerida</span>' : '')}</td>
+      <td>${a.respostas}</td><td>${fmtPct(a.taxa)}</td><td>${fmtTempo(a.tempo_diagnostico_ms)}</td><td>${fmtTempo(a.tempo_exercicios_ms)}</td><td>${fmtTempo(a.tempo_avaliacao_final_ms)}</td><td>${a.tem_telemetria ? fmtTempo(a.tempo_ms) : 'sem dados'}</td><td>${a.unidades_concluidas}</td>
+      <td>${a.ultima_atividade ? formatarData(a.ultima_atividade) : '—'}</td>
+      <td><label style="display:inline-flex;align-items:center;gap:.4rem;margin:0;text-transform:none;letter-spacing:0;font-size:.78rem;cursor:pointer">
+        <input type="checkbox" style="width:18px;height:18px" ${a.conta_teste ? 'checked' : ''} data-id="${a.id}" onchange="marcarContaTeste(this)">
+        <span class="sr-only">Marcar ${escHtml(a.nome)} como conta de teste</span><span aria-hidden="true">Teste</span></label></td></tr>`).join('') || '<tr><td colspan="10">Sem estudantes.</td></tr>';
+  }
+
+  async function marcarContaTeste(chk) {
+    const res = await fetch('/api/professor/conta-teste', { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ id: parseInt(chk.dataset.id,10), valor: chk.checked }) }).then(r => r.json()).catch(() => null);
+    if (!res || !res.sucesso) { chk.checked = !chk.checked; mostrarToast('Não foi possível salvar a marcação.', 'erro'); return; }
+    mostrarToast(chk.checked ? 'Conta marcada como teste.' : 'Marcação removida.', 'sucesso');
+    carregarTelemetria();
+  }
+
+  iniciar();
+</script>
+<script src="/js/mascote.js" defer></script>
+</body>
+</html>
