@@ -167,8 +167,8 @@ function renderizarConteudo() {
   const blocos = textos.map((c, i) => {
     const corpo = c.tipo === 'codigo' ? Codigo.html(c.corpo, '') : c.corpo;
     return `
-      <details class="sanfona"${i === 0 ? ' open' : ''}>
-        <summary>
+      <details class="sanfona" open>
+        <summary tabindex="-1">
           <span class="sf-seta" aria-hidden="true">▶</span>
           <h3 class="sf-titulo">${escHtml(c.titulo)}</h3>
           <span class="sf-meta">Bloco ${i+1} de ${textos.length}</span>
@@ -177,10 +177,41 @@ function renderizarConteudo() {
       </details>`;
   }).join('');
 
-  el.innerHTML = textos.length > 1 ? `
-    <div class="sf-acoes btn-grupo-sf">
-      <button type="button" class="btn btn-secondary btn-sm" id="btn-alternar-blocos" aria-pressed="false" onclick="alternarTodosBlocos()">Expandir tudo</button>
-    </div>${blocos}` : blocos;
+  el.innerHTML = `
+    <div class="conteudo-nav" id="conteudo-nav" hidden>
+      <span id="trilho-info" aria-live="polite"></span>
+      <button type="button" id="trilho-ant" aria-label="Blocos anteriores">‹</button>
+      <button type="button" id="trilho-prox" aria-label="Próximos blocos">›</button>
+    </div>
+    <div class="conteudo-trilho" id="conteudo-trilho" tabindex="0" role="region" aria-label="Blocos de conteúdo. Use as setas do teclado ou os botões para navegar para o lado.">${blocos}</div>`;
+
+  el.querySelectorAll('details.sanfona').forEach(d => d.addEventListener('toggle', () => { if (!d.open) d.open = true; }));
+  ligarTrilho();
+}
+
+function ligarTrilho() {
+  const tr = document.getElementById('conteudo-trilho'); if (!tr) return;
+  const nav = document.getElementById('conteudo-nav'), ant = document.getElementById('trilho-ant'),
+        prox = document.getElementById('trilho-prox'), info = document.getElementById('trilho-info');
+  const cards = tr.querySelectorAll('details.sanfona');
+  const passo = () => cards.length ? cards[0].getBoundingClientRect().width + 16 : tr.clientWidth;
+  function atualizar() {
+    const max = tr.scrollWidth - tr.clientWidth;
+    nav.hidden = max <= 2;
+    ant.disabled = tr.scrollLeft <= 2;
+    prox.disabled = tr.scrollLeft >= max - 2;
+    const w = passo(), total = cards.length;
+    const vis = Math.max(1, Math.round(tr.clientWidth / w));
+    const ini = Math.min(total, Math.round(tr.scrollLeft / w) + 1), fim = Math.min(total, ini + vis - 1);
+    info.textContent = fim > ini ? `Blocos ${ini}–${fim} de ${total}` : `Bloco ${ini} de ${total}`;
+  }
+  const rolar = dir => tr.scrollBy({ left: dir * passo(), behavior: movimentoReduzido() ? 'auto' : 'smooth' });
+  ant.addEventListener('click', () => rolar(-1));
+  prox.addEventListener('click', () => rolar(1));
+  tr.addEventListener('scroll', atualizar, { passive: true });
+  if (window.ResizeObserver) new ResizeObserver(atualizar).observe(tr);
+  window.addEventListener('resize', atualizar);
+  atualizar();
 }
 
 function alternarSanfonas(abrir) {
