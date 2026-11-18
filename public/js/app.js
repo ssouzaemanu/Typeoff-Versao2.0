@@ -104,6 +104,21 @@ function fecharMenuMovel(devolverFoco) {
   if (t) { t.setAttribute('aria-expanded','false'); if (devolverFoco) t.focus(); }
 }
 
+// Menu lateral recuável (desktop): lembra a escolha entre as páginas
+(function () {
+  try { if (localStorage.getItem('typeoff_menu_recuado') === '1') document.documentElement.classList.add('menu-recuado'); } catch (e) {}
+})();
+function menuRecuado() { return document.documentElement.classList.contains('menu-recuado'); }
+function definirMenuRecuado(recuado, salvar) {
+  document.documentElement.classList.toggle('menu-recuado', recuado);
+  if (salvar) { try { localStorage.setItem('typeoff_menu_recuado', recuado ? '1' : '0'); } catch (e) {} }
+  const b = document.getElementById('menu-recuar'); if (!b) return;
+  b.setAttribute('aria-expanded', recuado ? 'false' : 'true');
+  b.setAttribute('aria-label', recuado ? 'Mostrar menu lateral' : 'Recuar menu lateral');
+  b.title = recuado ? 'Mostrar menu' : 'Recuar menu';
+  b.innerHTML = '<span aria-hidden="true">' + (recuado ? '☰' : '‹') + '</span>';
+}
+
 function prepararTopbar() {
   const topbar = document.querySelector('.topbar');
   if (!topbar || document.getElementById('menu-toggle')) return;
@@ -121,6 +136,12 @@ function prepararTopbar() {
   });
   topbar.insertBefore(wrap, primeiro);
   wrap.appendChild(btn);
+  const rec = document.createElement('button');
+  rec.type = 'button'; rec.id = 'menu-recuar'; rec.className = 'menu-recuar';
+  rec.setAttribute('aria-controls', 'sidebar');
+  rec.addEventListener('click', function () { definirMenuRecuado(!menuRecuado(), true); });
+  wrap.appendChild(rec);
+  definirMenuRecuado(menuRecuado(), false);
   if (primeiro) wrap.appendChild(primeiro);
   if (!document.getElementById('sidebar-backdrop')) {
     const bd = document.createElement('div');
